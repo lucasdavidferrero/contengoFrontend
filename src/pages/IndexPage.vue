@@ -24,6 +24,31 @@
       </template>
     </q-table>
     </div>
+
+    <!-- Expand Dialog -->
+    <div>
+      <q-dialog
+      v-model="expandDialog" @hide="onExpandDialogHide">
+      <q-card style="width: 700px; max-width: 80vw;">
+        <q-card-section>
+          <div class="text-h6">Más info de {{selectedExpandedPet?.name}}</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <p>ID: {{selectedExpandedPet?.id}}</p>
+          <p>Fecha creado: {{selectedExpandedPet?.createdAt}}</p>
+          <p>Sexo: {{selectedExpandedPet?.sex}}</p>
+          <p>Peso (KG): {{selectedExpandedPet?.weightKg}}</p>
+          <p>Año nacimiento: {{selectedExpandedPet?.birthDate}}</p>
+          <div>Notas: {{selectedExpandedPet?.notes}}</div>
+        </q-card-section>
+
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn flat label="OK" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    </div>
   </q-page>
 </template>
 
@@ -37,7 +62,15 @@ export default defineComponent({
   name: 'IndexPage',
   setup () {
     const isFetchingList = ref(false)
+    const expandDialog = ref(false)
+    const selectedExpandedPet = ref() as Ref<PetData | null>
     const pets = ref([]) as Ref<PetData[]>
+
+    function getPetById (id: number) : PetData | null {
+      const i = pets.value.findIndex(p => p.id === id)
+      if (i !== -1) return pets.value[i]
+      return null
+    }
 
     async function getPets () {
       try {
@@ -51,16 +84,20 @@ export default defineComponent({
       }
     }
 
+    /* Expand Dialog START */
     function openExpandDialog (row: any) {
       const petId = row.id as number
-      getPetById(petId)
+      const pet = getPetById(petId)
+      if (pet) {
+        selectedExpandedPet.value = pet
+        expandDialog.value = true
+      }
     }
 
-    function getPetById (id: number) : PetData | null {
-      const i = pets.value.findIndex(p => p.id === id)
-      if (i !== -1) return pets.value[i]
-      return null
+    function onExpandDialogHide () {
+      selectedExpandedPet.value = null
     }
+    /* Expand Dialog END */
 
     onMounted(async () => {
       await getPets()
@@ -70,7 +107,10 @@ export default defineComponent({
       pets,
       isFetchingList,
       columnConf,
-      openExpandDialog
+      expandDialog,
+      selectedExpandedPet,
+      openExpandDialog,
+      onExpandDialogHide
     }
   }
 })
@@ -78,7 +118,7 @@ export default defineComponent({
 const columnConf = [
   {
     name: 'expand',
-    label: 'Expandir',
+    label: 'Ver más',
     align: 'center'
   },
   {

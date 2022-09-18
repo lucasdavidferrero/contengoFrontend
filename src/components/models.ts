@@ -2,23 +2,23 @@ export interface PetCreate {
   idMicrochip: string //*
   idInternal: string //*
   name: string //*
-  sex: string
+  sex: string // *
   breed: string // *
   specie: string // *
-  weightKg: number
+  weightKg: number //*
   admitionKind: string //*
   admitionCondition: string //*
   notes: string
-  birthData: string
+  birthDate: string // *
   admitionDate: string //*
 }
 
 export interface PetUpdate extends PetCreate{
-  id: number
+  id: number //*
   isAdopted: boolean //*
 }
 
 export interface PetData extends PetUpdate {
-  createdAt: string
+  createdAt: string //*
   deletedAt: string
 }
