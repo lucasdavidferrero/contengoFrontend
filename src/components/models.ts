@@ -1,8 +1,24 @@
-export interface Todo {
-  id: number;
-  content: string;
+export interface PetCreate {
+  idMicrochip: string
+  idInternal: string
+  name: string
+  sex: string
+  breed: string
+  specie: string
+  weightKg: number
+  admitionKind: string
+  admitionCondition: string
+  notes: string
+  birthData: string
+  admitionDate: string
 }
 
-export interface Meta {
-  totalCount: number;
+export interface PetUpdate extends PetCreate{
+  id: number
+  isAdopted: boolean
+}
+
+export interface PetData extends PetUpdate {
+  createdAt: string
+  deletedAt: string
 }
