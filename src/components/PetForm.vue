@@ -1,11 +1,12 @@
 <template>
   <div>
-    <div>
+    <div class="q-pa-lg">
       <q-form
         @submit="onSubmit"
         @reset="onReset"
         class="q-gutter-md"
       >
+      <div class="text-h6 q-ma-none">Formulario Mascota</div>
       <div class="row q-col-gutter-md q-mt-md">
         <div class="col-xs-12 col-md-6">
           <q-input
@@ -56,7 +57,67 @@
         </div>
       </div>
 
-    </q-form>
+      <div class="row q-col-gutter-md q-mt-md">
+        <div class="col-xs-12 col-md-6">
+          <q-input
+            v-model="form.admitionDate"
+            mask="date"
+            label="Fecha admisión"
+            :rules="[fRules.required, 'date']" lazy-rules/>
+        </div>
+        <div class="col-xs-12 col-md-6">
+          <q-select v-model="form.admitionKind"
+            :options="admitionKindOptions"
+            label="Tipo de admisión"
+            :rules="[fRules.required]" lazy-rules/>
+        </div>
+      </div>
+
+      <div class="row q-col-gutter-md q-mt-md">
+        <div class="col-xs-12 col-md-12">
+          <q-input
+            v-model="form.admitionCondition"
+            label="Condición admisión"/>
+        </div>
+      </div>
+
+      <div class="row q-col-gutter-md q-mt-md">
+        <div class="col-xs-12 col-md-6">
+          <q-input
+            v-model="form.idMicrochip"
+            label="ID Microchip"/>
+        </div>
+        <div class="col-xs-12 col-md-6">
+          <q-select v-model="form.idInternal"
+            :options="admitionKindOptions"
+            label="ID Interno"/>
+        </div>
+      </div>
+
+      <div>
+        <q-checkbox
+          left-label
+          v-model="form.isAdopted"
+          label="Adoptado?"
+        />
+      </div>
+
+      <div class="row q-col-gutter-md q-mt-md">
+        <div class="col-xs-12 col-md-12">
+          <q-input
+            v-model="form.notes"
+            label="Notas adicionales"
+            autogrow
+          />
+        </div>
+      </div>
+
+      <div class="row justify-center">
+        <q-btn label="Guardar" type="submit" color="primary"/>
+        <q-btn label="Cancelar" type="button" color="primary" flat class="q-ml-sm" />
+      </div>
+
+      </q-form>
     </div>
   </div>
 </template>
@@ -81,7 +142,14 @@ export default defineComponent({
       breed: '',
       weightKg: 0,
       sex: '',
-      birthDate: null
+      birthDate: null,
+      admitionDate: null,
+      admitionKind: '',
+      admitionCondition: '',
+      isAdopted: false,
+      notes: '',
+      idMicrochip: '',
+      idInternal: ''
     })
 
     const fRules = {
@@ -92,6 +160,14 @@ export default defineComponent({
 
     const specieOptions = [{ label: 'Perro', value: 'perro' }, { label: 'Gato', value: 'gato' }, { label: 'Otro', value: 'otro' }]
     const sexOptions = [{ label: 'Masculino', value: 'masculino' }, { label: 'Femenino', value: 'femenino' }, { label: 'otro', value: 'otro' }]
+    const admitionKindOptions = [
+      { label: 'Perdido', value: 'perdido' },
+      { label: 'Abandonado', value: 'abandonado' },
+      { label: 'Maltrato', value: 'maltrato' },
+      { label: 'Recién nacido', value: 'recienNacido' },
+      { label: 'Dueño entrega', value: 'duenioEntrega' },
+      { label: 'Otro', value: 'otro' }
+    ]
 
     function onSubmit () {
       console.log(props.pet)
@@ -106,6 +182,7 @@ export default defineComponent({
       fRules,
       specieOptions,
       sexOptions,
+      admitionKindOptions,
       onSubmit,
       onReset
     }
