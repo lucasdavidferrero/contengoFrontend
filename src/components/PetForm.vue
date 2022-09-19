@@ -11,8 +11,7 @@
           <q-input
             v-model="form.name"
             label="Nombre"
-            lazy-rules
-            :rules="[fRules.required]"
+            :rules="[fRules.required]" lazy-rules
             />
         </div>
         <div class="col-xs-12 col-md-6">
@@ -28,8 +27,7 @@
           <q-input
             v-model="form.breed"
             label="Raza"
-            lazy-rules
-            :rules="[fRules.required]"
+            :rules="[fRules.required]" lazy-rules
             />
         </div>
         <div class="col-xs-12 col-md-6">
@@ -37,9 +35,24 @@
             v-model.number="form.weightKg"
             label="Peso"
             hint="Peso en Kilogramos."
-            lazy-rules
-            :rules="[fRules.requiredNum, fRules.positiveNumber]"
+            :rules="[fRules.requiredNum, fRules.positiveNumber]" lazy-rules
             />
+        </div>
+      </div>
+
+      <div class="row q-col-gutter-md q-mt-md">
+        <div class="col-xs-12 col-md-6">
+          <q-select v-model="form.sex"
+            :options="sexOptions"
+            label="Sexo"
+            :rules="[fRules.required]" lazy-rules/>
+        </div>
+        <div class="col-xs-12 col-md-6">
+          <q-input
+            v-model="form.birthDate"
+            mask="date"
+            label="Fecha nacimiento"
+            :rules="[fRules.required, 'date']" lazy-rules/>
         </div>
       </div>
 
@@ -66,7 +79,9 @@ export default defineComponent({
       name: '',
       specie: '',
       breed: '',
-      weightKg: 0
+      weightKg: 0,
+      sex: '',
+      birthDate: null
     })
 
     const fRules = {
@@ -76,6 +91,7 @@ export default defineComponent({
     }
 
     const specieOptions = [{ label: 'Perro', value: 'perro' }, { label: 'Gato', value: 'gato' }, { label: 'Otro', value: 'otro' }]
+    const sexOptions = [{ label: 'Masculino', value: 'masculino' }, { label: 'Femenino', value: 'femenino' }, { label: 'otro', value: 'otro' }]
 
     function onSubmit () {
       console.log(props.pet)
@@ -89,6 +105,7 @@ export default defineComponent({
       form,
       fRules,
       specieOptions,
+      sexOptions,
       onSubmit,
       onReset
     }
