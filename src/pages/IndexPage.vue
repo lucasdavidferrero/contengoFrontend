@@ -1,5 +1,8 @@
 <template>
-  <q-page class="row items-center justify-evenly">
+  <q-page class="q-pa-xl">
+    <div>
+      <PetForm></PetForm>
+    </div>
     <div>
       <q-table
       :rows="pets"
@@ -56,10 +59,12 @@
 import { defineComponent, onMounted, ref, Ref } from 'vue'
 import { PetService } from 'src/services/PetService'
 import { PetData } from 'src/components/models'
+import PetForm from 'src/components/PetForm.vue'
 const petService = new PetService()
 
 export default defineComponent({
   name: 'IndexPage',
+  components: { PetForm },
   setup () {
     const isFetchingList = ref(false)
     const expandDialog = ref(false)
