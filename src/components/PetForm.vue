@@ -3,22 +3,22 @@
     <div class="q-pa-lg">
       <q-form
         @submit="onSubmit"
-        @reset="onReset"
         class="q-gutter-md"
+        ref="qFormRef"
       >
       <div class="text-h6 q-ma-none">Formulario Mascota</div>
       <div class="row q-col-gutter-md q-mt-md">
         <div class="col-xs-12 col-md-6">
           <q-input
             v-model="form.name"
-            label="Nombre"
+            label="Nombre *"
             :rules="[fRules.required]" lazy-rules
             />
         </div>
         <div class="col-xs-12 col-md-6">
           <q-select v-model="form.specie"
             :options="specieOptions"
-            label="Especie"
+            label="Especie *"
             :rules="[fRules.required]" lazy-rules/>
         </div>
       </div>
@@ -27,14 +27,14 @@
         <div class="col-xs-12 col-md-6">
           <q-input
             v-model="form.breed"
-            label="Raza"
+            label="Raza *"
             :rules="[fRules.required]" lazy-rules
             />
         </div>
         <div class="col-xs-12 col-md-6">
           <q-input
             v-model.number="form.weightKg"
-            label="Peso"
+            label="Peso *"
             hint="Peso en Kilogramos."
             :rules="[fRules.requiredNum, fRules.positiveNumber]" lazy-rules
             />
@@ -45,14 +45,14 @@
         <div class="col-xs-12 col-md-6">
           <q-select v-model="form.sex"
             :options="sexOptions"
-            label="Sexo"
+            label="Sexo *"
             :rules="[fRules.required]" lazy-rules/>
         </div>
         <div class="col-xs-12 col-md-6">
           <q-input
             v-model="form.birthDate"
             mask="date"
-            label="Fecha nacimiento"
+            label="Fecha nacimiento *"
             :rules="[fRules.required, 'date']" lazy-rules/>
         </div>
       </div>
@@ -62,13 +62,13 @@
           <q-input
             v-model="form.admitionDate"
             mask="date"
-            label="Fecha admisión"
+            label="Fecha admisión *"
             :rules="[fRules.required, 'date']" lazy-rules/>
         </div>
         <div class="col-xs-12 col-md-6">
           <q-select v-model="form.admitionKind"
             :options="admitionKindOptions"
-            label="Tipo de admisión"
+            label="Tipo de admisión *"
             :rules="[fRules.required]" lazy-rules/>
         </div>
       </div>
@@ -114,7 +114,7 @@
 
       <div class="row justify-center">
         <q-btn label="Guardar" type="submit" color="primary"/>
-        <q-btn label="Cancelar" type="button" color="primary" flat class="q-ml-sm" />
+        <q-btn label="Cancelar" type="button" color="primary" flat class="q-ml-sm" @click="onAbort"/>
       </div>
 
       </q-form>
@@ -124,10 +124,13 @@
 
 <script lang="ts">
 import { Pet } from 'src/entities/Pet'
-import { defineComponent, PropType, reactive } from 'vue'
+import { defineComponent, PropType, reactive, ref } from 'vue'
 import { required, positiveNumber, requiredNum } from 'src/utils/Rules'
+import { QSelectOption } from 'quasar'
+import { AnySoaRecord } from 'dns'
 
 export default defineComponent({
+  emits: ['completedUpdate', 'completedCreation', 'aborted'],
   name: 'PetForm',
   props: {
     pet: {
@@ -138,12 +141,12 @@ export default defineComponent({
   setup (props) {
     const form = reactive({
       name: '',
-      specie: '',
+      specie: null as any,
       breed: '',
       weightKg: 0,
-      sex: '',
-      birthDate: null,
-      admitionDate: null,
+      sex: null as any,
+      birthDate: '',
+      admitionDate: '',
       admitionKind: '',
       admitionCondition: '',
       isAdopted: false,
@@ -158,8 +161,10 @@ export default defineComponent({
       requiredNum
     }
 
+    const qFormRef = ref(null)
+
     const specieOptions = [{ label: 'Perro', value: 'perro' }, { label: 'Gato', value: 'gato' }, { label: 'Otro', value: 'otro' }]
-    const sexOptions = [{ label: 'Masculino', value: 'masculino' }, { label: 'Femenino', value: 'femenino' }, { label: 'otro', value: 'otro' }]
+    const sexOptions = [{ label: 'Macho', value: 'macho' }, { label: 'Hembra', value: 'hembra' }, { label: 'Otro', value: 'otro' }]
     const admitionKindOptions = [
       { label: 'Perdido', value: 'perdido' },
       { label: 'Abandonado', value: 'abandonado' },
@@ -170,21 +175,26 @@ export default defineComponent({
     ]
 
     function onSubmit () {
-      console.log(props.pet)
+      const pet = new Pet(0, form.idMicrochip, form.idInternal, form.name, form.sex.value, form.breed, form.specie.value,
+        form.weightKg, form.admitionKind, form.admitionCondition, form.admitionDate, form.birthDate,
+        form.notes, form.isAdopted)
+      console.log(pet)
     }
 
-    function onReset () {
+    function onAbort () {
       console.log(props.pet)
+      console.log(qFormRef)
     }
 
     return {
       form,
       fRules,
+      qFormRef,
       specieOptions,
       sexOptions,
       admitionKindOptions,
       onSubmit,
-      onReset
+      onAbort
     }
   }
 })
