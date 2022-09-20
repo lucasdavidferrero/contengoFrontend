@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="q-pa-lg">
+    <div class="q-pa-lg relative-position">
       <q-form
         @submit="onSubmit"
         class="q-gutter-md"
@@ -94,7 +94,7 @@
         </div>
       </div>
 
-      <div>
+      <div v-if="pet">
         <q-checkbox
           left-label
           v-model="form.isAdopted"
@@ -118,6 +118,13 @@
       </div>
 
       </q-form>
+
+      <q-inner-loading
+        :showing="isLoading"
+        label="Cargando..."
+        label-class="text-teal"
+        label-style="font-size: 1.1em"
+      />
     </div>
   </div>
 </template>
@@ -125,6 +132,7 @@
 <script lang="ts">
 import { Pet } from 'src/entities/Pet'
 import { defineComponent, PropType, reactive, ref } from 'vue'
+import { useQuasar } from 'quasar'
 import { required, positiveNumber, requiredNum } from 'src/utils/Rules'
 import { PetService } from 'src/services/PetService'
 const petService = new PetService()
@@ -137,7 +145,8 @@ export default defineComponent({
       default: null
     }
   },
-  setup (props) {
+  setup (props, { emit }) {
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     const form = reactive({
       name: '',
       specie: null as any,
@@ -146,7 +155,7 @@ export default defineComponent({
       sex: null as any,
       birthDate: '',
       admitionDate: '',
-      admitionKind: '',
+      admitionKind: '' as any,
       admitionCondition: '',
       isAdopted: false,
       notes: '',
@@ -162,6 +171,8 @@ export default defineComponent({
       requiredNum
     }
 
+    const $q = useQuasar()
+
     const qFormRef = ref(null)
 
     const specieOptions = [{ label: 'Perro', value: 'perro' }, { label: 'Gato', value: 'gato' }, { label: 'Otro', value: 'otro' }]
@@ -176,12 +187,25 @@ export default defineComponent({
     ]
 
     async function onSubmit () {
-      const pet = new Pet(0, form.idMicrochip, form.idInternal, form.name, form.sex.value, form.breed, form.specie.value,
-        form.weightKg, form.admitionKind, form.admitionCondition, form.admitionDate, form.birthDate,
+      // TODO Ver como solucionar la estructura de la fecha (debe ser 2022-05-23 y no 2022/05/23).
+      const pet = new Pet(0, form.idMicrochip, form.idInternal, form.name, form.sex.value as string, form.breed, form.specie.value,
+        form.weightKg, form.admitionKind.value, form.admitionCondition, form.admitionDate.split('/').join('-'), form.birthDate.split('/').join('-'),
         form.notes, form.isAdopted)
       try {
         isLoading.value = true
-        await petService.createNew(pet)
+        if (!props.pet) {
+          // crear
+          const res = await petService.createNew(pet)
+          $q.notify({
+            type: 'positive',
+            message: `Mascota "${form.name}" creada exitosamente`
+          })
+          pet.id = res.id
+          pet.createdAt = new Date(res.createdAt * 1000).toString()
+          emit('completedCreation', pet)
+        } else {
+          // actualizar
+        }
       } catch (e) {
         console.error(e)
       } finally {
@@ -190,8 +214,7 @@ export default defineComponent({
     }
 
     function onAbort () {
-      console.log(props.pet)
-      console.log(qFormRef)
+      emit('aborted')
     }
 
     return {

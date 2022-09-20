@@ -1,4 +1,4 @@
-import { PetData, PetCreate } from './../components/models'
+import { PetData, PetCreate, PetCreateResponse } from './../components/models'
 import { api } from 'src/boot/axios'
 import { Pet } from 'src/entities/Pet'
 
@@ -24,9 +24,8 @@ export class PetService {
       birthDate: pet.birthDate,
       admitionDate: pet.admitionDate
     }
-    if (pet.idMicrochip) { data.idMicrochip = pet.idMicrochip }
-    if (pet.idInternal) { data.idInternal = pet.idInternal }
+
     const res = await api.post('/v1/pets/create', data)
-    console.log(res)
+    return res.data as Promise<PetCreateResponse>
   }
 }

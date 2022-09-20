@@ -1,7 +1,19 @@
 <template>
   <q-page class="q-pa-xl">
     <div>
-      <PetForm></PetForm>
+      <q-dialog v-model="expandPetFormDialog" persistent full-width>
+        <q-card>
+          <q-card-section>
+          </q-card-section>
+
+          <q-card-section class="q-pt-none">
+            <PetForm @aborted="expandPetFormDialog = false" @completed-creation="onPetCreation"></PetForm>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
+    </div>
+    <div class="q-my-md">
+      <q-btn label="Agrear" type="button" color="primary" @click="expandPetFormDialog = true" :disabled="expandPetFormDialog"/>
     </div>
     <div>
       <q-table
@@ -60,14 +72,17 @@ import { defineComponent, onMounted, ref, Ref } from 'vue'
 import { PetService } from 'src/services/PetService'
 import { PetData } from 'src/components/models'
 import PetForm from 'src/components/PetForm.vue'
+import { Pet } from 'src/entities/Pet'
 const petService = new PetService()
 
 export default defineComponent({
   name: 'IndexPage',
   components: { PetForm },
   setup () {
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     const isFetchingList = ref(false)
     const expandDialog = ref(false)
+    const expandPetFormDialog = ref(false)
     const selectedExpandedPet = ref() as Ref<PetData | null>
     const pets = ref([]) as Ref<PetData[]>
 
@@ -104,6 +119,28 @@ export default defineComponent({
     }
     /* Expand Dialog END */
 
+    function onPetCreation (pet: Pet) {
+      pets.value.push({
+        id: pet.id,
+        idMicrochip: pet.idMicrochip,
+        idInternal: pet.idInternal,
+        name: pet.name,
+        sex: pet.sex,
+        breed: pet.breed,
+        specie: pet.specie,
+        weightKg: pet.weightKg,
+        admitionKind: pet.admitionKind,
+        admitionCondition: pet.admitionCondition,
+        notes: pet.notes,
+        birthDate: pet.birthDate,
+        admitionDate: pet.admitionDate,
+        isAdopted: pet.isAdopted,
+        createdAt: pet.createdAt as string,
+        deletedAt: pet.deletedAt || ''
+      })
+      expandPetFormDialog.value = false
+    }
+
     onMounted(async () => {
       await getPets()
     })
@@ -114,6 +151,8 @@ export default defineComponent({
       columnConf,
       expandDialog,
       selectedExpandedPet,
+      expandPetFormDialog,
+      onPetCreation,
       openExpandDialog,
       onExpandDialogHide
     }
