@@ -1,6 +1,6 @@
 export interface PetCreate {
-  idMicrochip: string
-  idInternal: string
+  idMicrochip?: string
+  idInternal?: string
   name: string
   sex: string
   breed: string
@@ -21,4 +21,9 @@ export interface PetUpdate extends PetCreate{
 export interface PetData extends PetUpdate {
   createdAt: string
   deletedAt: string
+}
+
+export interface PetCreateResponse {
+  id: number
+  createdAt: number
 }

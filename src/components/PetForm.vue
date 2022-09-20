@@ -88,8 +88,8 @@
             label="ID Microchip"/>
         </div>
         <div class="col-xs-12 col-md-6">
-          <q-select v-model="form.idInternal"
-            :options="admitionKindOptions"
+          <q-input
+            v-model="form.idInternal"
             label="ID Interno"/>
         </div>
       </div>
@@ -126,9 +126,8 @@
 import { Pet } from 'src/entities/Pet'
 import { defineComponent, PropType, reactive, ref } from 'vue'
 import { required, positiveNumber, requiredNum } from 'src/utils/Rules'
-import { QSelectOption } from 'quasar'
-import { AnySoaRecord } from 'dns'
-
+import { PetService } from 'src/services/PetService'
+const petService = new PetService()
 export default defineComponent({
   emits: ['completedUpdate', 'completedCreation', 'aborted'],
   name: 'PetForm',
@@ -155,6 +154,8 @@ export default defineComponent({
       idInternal: ''
     })
 
+    const isLoading = ref(false)
+
     const fRules = {
       required,
       positiveNumber,
@@ -174,11 +175,18 @@ export default defineComponent({
       { label: 'Otro', value: 'otro' }
     ]
 
-    function onSubmit () {
+    async function onSubmit () {
       const pet = new Pet(0, form.idMicrochip, form.idInternal, form.name, form.sex.value, form.breed, form.specie.value,
         form.weightKg, form.admitionKind, form.admitionCondition, form.admitionDate, form.birthDate,
         form.notes, form.isAdopted)
-      console.log(pet)
+      try {
+        isLoading.value = true
+        await petService.createNew(pet)
+      } catch (e) {
+        console.error(e)
+      } finally {
+        isLoading.value = false
+      }
     }
 
     function onAbort () {
@@ -190,6 +198,7 @@ export default defineComponent({
       form,
       fRules,
       qFormRef,
+      isLoading,
       specieOptions,
       sexOptions,
       admitionKindOptions,
