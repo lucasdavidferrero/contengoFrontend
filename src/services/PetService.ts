@@ -25,7 +25,7 @@ export class PetService {
       admitionDate: pet.admitionDate
     }
 
-    const res = await api.post('/v1/pets/update', data)
+    const res = await api.post('/v1/pets/create', data)
     return res.data as Promise<PetCreateResponse>
   }
 
@@ -44,9 +44,11 @@ export class PetService {
       admitionCondition: pet.admitionCondition,
       notes: pet.notes,
       birthDate: pet.birthDate,
-      admitionDate: pet.admitionDate
+      admitionDate: pet.admitionDate,
+      createdAt: pet.createdAt as string
     }
-    const res = await api.post('/v1/pets/create', data)
+    console.log(data)
+    const res = await api.post('/v1/pets/update', data)
     console.log(res)
     return res.data
   }
