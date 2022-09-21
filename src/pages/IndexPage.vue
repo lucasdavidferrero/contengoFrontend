@@ -7,7 +7,7 @@
           </q-card-section>
 
           <q-card-section class="q-pt-none">
-            <PetForm @aborted="expandPetFormDialog = false" @completed-creation="onPetCreation"></PetForm>
+            <PetForm @aborted="onExpandDialogAbort" @completed-creation="onPetCreation" :pet="selectedPet"></PetForm>
           </q-card-section>
         </q-card>
       </q-dialog>
@@ -33,7 +33,7 @@
       <!-- Acciones -->
       <template #body-cell-actions="props">
         <q-td :props="props">
-          <q-btn flat round dense icon="edit"></q-btn>
+          <q-btn flat round dense icon="edit" @click="onEditRow(props.row)"></q-btn>
           <q-btn flat round dense icon="delete"></q-btn>
         </q-td>
       </template>
@@ -114,6 +114,10 @@ export default defineComponent({
         expandDialog.value = true
       }
     }
+    function onExpandDialogAbort () {
+      expandPetFormDialog.value = false
+      selectedPet.value = null
+    }
 
     function onExpandDialogHide () {
       selectedExpandedPet.value = null
@@ -151,6 +155,11 @@ export default defineComponent({
       await getPets()
     })
 
+    function onEditRow (row: Pet) {
+      selectedPet.value = { ...row }
+      expandPetFormDialog.value = true
+    }
+
     return {
       pets,
       isFetchingList,
@@ -159,9 +168,12 @@ export default defineComponent({
       selectedExpandedPet,
       expandPetFormDialog,
       expandPetFormDialogCreation,
+      selectedPet,
       onPetCreation,
       openExpandDialog,
-      onExpandDialogHide
+      onExpandDialogHide,
+      onExpandDialogAbort,
+      onEditRow
     }
   }
 })

@@ -141,7 +141,7 @@ export default defineComponent({
   name: 'PetForm',
   props: {
     pet: {
-      type: Object as PropType<Pet>,
+      type: Object as PropType<Pet> | PropType<null>,
       default: null
     }
   },
