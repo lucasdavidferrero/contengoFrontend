@@ -25,5 +25,10 @@ export interface PetData extends PetUpdate {
 
 export interface PetCreateResponse {
   id: number
-  createdAt: number // Unix ms
+  createdAt: number // Unix seconds
+}
+
+export interface PetUpdateResponse {
+  id: number
+  createdAt: number
 }

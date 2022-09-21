@@ -13,7 +13,7 @@
       </q-dialog>
     </div>
     <div class="q-my-md">
-      <q-btn label="Agrear" type="button" color="primary" @click="expandPetFormDialog = true" :disabled="expandPetFormDialog"/>
+      <q-btn label="Agregar" type="button" color="primary" @click="expandPetFormDialogCreation" :disabled="expandPetFormDialog"/>
     </div>
     <div>
       <q-table
@@ -85,6 +85,7 @@ export default defineComponent({
     const expandPetFormDialog = ref(false)
     const selectedExpandedPet = ref() as Ref<PetData | null>
     const pets = ref([]) as Ref<PetData[]>
+    const selectedPet = ref(null) as Ref<Pet> | Ref<null>
 
     function getPetById (id: number) : PetData | null {
       const i = pets.value.findIndex(p => p.id === id)
@@ -116,6 +117,11 @@ export default defineComponent({
 
     function onExpandDialogHide () {
       selectedExpandedPet.value = null
+    }
+
+    function expandPetFormDialogCreation () {
+      selectedPet.value = null
+      expandPetFormDialog.value = true
     }
     /* Expand Dialog END */
 
@@ -152,6 +158,7 @@ export default defineComponent({
       expandDialog,
       selectedExpandedPet,
       expandPetFormDialog,
+      expandPetFormDialogCreation,
       onPetCreation,
       openExpandDialog,
       onExpandDialogHide

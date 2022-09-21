@@ -113,8 +113,8 @@
       </div>
 
       <div class="row justify-center">
-        <q-btn label="Guardar" type="submit" color="primary"/>
         <q-btn label="Cancelar" type="button" color="primary" flat class="q-ml-sm" @click="onAbort"/>
+        <q-btn label="Guardar" type="submit" color="primary"/>
       </div>
 
       </q-form>
@@ -131,7 +131,7 @@
 
 <script lang="ts">
 import { Pet } from 'src/entities/Pet'
-import { defineComponent, PropType, reactive, ref } from 'vue'
+import { defineComponent, PropType, reactive, ref, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import { required, positiveNumber, requiredNum } from 'src/utils/Rules'
 import { PetService } from 'src/services/PetService'
@@ -205,6 +205,13 @@ export default defineComponent({
           emit('completedCreation', pet)
         } else {
           // actualizar
+          const res = await petService.update(pet)
+          $q.notify({
+            type: 'positive',
+            message: `Mascota "${form.name}" actualizada correctamente`
+          })
+          console.log(res)
+          emit('completedUpdate', pet)
         }
       } catch (e) {
         console.error(e)
@@ -216,6 +223,24 @@ export default defineComponent({
     function onAbort () {
       emit('aborted')
     }
+
+    onMounted(() => {
+      if (props.pet) {
+        form.name = props.pet.name
+        form.specie = props.pet.specie
+        form.breed = props.pet.breed
+        form.weightKg = props.pet.weightKg
+        form.sex = props.pet.sex
+        form.birthDate = props.pet.birthDate
+        form.admitionDate = props.pet.admitionDate
+        form.admitionKind = props.pet.admitionKind
+        form.admitionCondition = props.pet.admitionCondition
+        form.isAdopted = props.pet.isAdopted
+        form.notes = props.pet.notes
+        form.idMicrochip = props.pet.idMicrochip
+        form.idInternal = props.pet.idInternal
+      }
+    })
 
     return {
       form,
