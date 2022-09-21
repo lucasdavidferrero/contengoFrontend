@@ -193,7 +193,6 @@ export default defineComponent({
         form.notes, form.isAdopted)
       try {
         isLoading.value = true
-        debugger
         if (!props.pet) {
           // crear
           const res = await petService.createNew(pet)
