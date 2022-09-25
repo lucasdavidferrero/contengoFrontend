@@ -7,7 +7,11 @@
           </q-card-section>
 
           <q-card-section class="q-pt-none">
-            <PetForm @aborted="onExpandDialogAbort" @completed-creation="onPetCreation" :pet="selectedPet"></PetForm>
+            <PetForm @aborted="onExpandDialogAbort"
+                     @completed-creation="onPetCreation"
+                     @completed-update="onPetUpdated"
+                     :pet="selectedPet">
+            </PetForm>
           </q-card-section>
         </q-card>
       </q-dialog>
@@ -151,6 +155,29 @@ export default defineComponent({
       expandPetFormDialog.value = false
     }
 
+    function onPetUpdated (pet: Pet) {
+      console.log(pet)
+      // buscar poe ID en el listado y cambiar solo los atributos que son updatables..
+      const petDataFound = getPetById(pet.id)
+      if (petDataFound) {
+        petDataFound.idMicrochip = pet.idMicrochip
+        petDataFound.idInternal = pet.idInternal
+        petDataFound.name = pet.name
+        petDataFound.sex = pet.sex
+        petDataFound.breed = pet.breed
+        petDataFound.specie = pet.specie
+        petDataFound.weightKg = pet.weightKg
+        petDataFound.admitionKind = pet.admitionKind
+        petDataFound.admitionCondition = pet.admitionCondition
+        petDataFound.notes = pet.notes
+        petDataFound.birthDate = pet.birthDate
+        petDataFound.admitionDate = pet.admitionDate
+        petDataFound.isAdopted = pet.isAdopted
+      }
+      expandPetFormDialog.value = false
+      selectedExpandedPet.value = null
+    }
+
     onMounted(async () => {
       await getPets()
     })
@@ -170,6 +197,7 @@ export default defineComponent({
       expandPetFormDialogCreation,
       selectedPet,
       onPetCreation,
+      onPetUpdated,
       openExpandDialog,
       onExpandDialogHide,
       onExpandDialogAbort,

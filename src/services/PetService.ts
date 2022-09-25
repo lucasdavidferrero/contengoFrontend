@@ -45,11 +45,8 @@ export class PetService {
       notes: pet.notes,
       birthDate: pet.birthDate,
       admitionDate: pet.admitionDate
-      // createdAt: pet.createdAt as string
     }
-    console.log(data)
     const res = await api.post('/v1/pets/update', data)
-    console.log(res)
     return res.data
   }
 }
