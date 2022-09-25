@@ -38,7 +38,7 @@
       <template #body-cell-actions="props">
         <q-td :props="props">
           <q-btn flat round dense icon="edit" @click="onEditRow(props.row)"></q-btn>
-          <q-btn flat round dense icon="delete"></q-btn>
+          <q-btn flat round dense icon="delete" @click="onDeleteRow(props.row)"></q-btn>
         </q-td>
       </template>
     </q-table>
@@ -187,6 +187,11 @@ export default defineComponent({
       expandPetFormDialog.value = true
     }
 
+    function onDeleteRow (row) {
+      // Invocar service que elimina y actualizar QTable.
+      console.log({ ...row })
+    }
+
     return {
       pets,
       isFetchingList,
@@ -201,7 +206,8 @@ export default defineComponent({
       openExpandDialog,
       onExpandDialogHide,
       onExpandDialogAbort,
-      onEditRow
+      onEditRow,
+      onDeleteRow
     }
   }
 })
