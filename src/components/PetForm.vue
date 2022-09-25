@@ -188,9 +188,10 @@ export default defineComponent({
 
     async function onSubmit () {
       // TODO Ver como solucionar la estructura de la fecha (debe ser 2022-05-23 y no 2022/05/23).
-      const pet = new Pet(0, form.idMicrochip, form.idInternal, form.name, form.sex.value as string, form.breed, form.specie.value,
-        form.weightKg, form.admitionKind.value, form.admitionCondition, form.admitionDate.split('/').join('-'), form.birthDate.split('/').join('-'),
-        form.notes, form.isAdopted)
+      const pet = new Pet(0, form.idMicrochip || '', form.idInternal || '', form.name, form.sex, form.breed, form.specie,
+        form.weightKg, form.admitionKind, form.admitionCondition, form.admitionDate.split('/').join('-'), form.birthDate.split('/').join('-'),
+        form.notes || '', form.isAdopted)
+      debugger
       try {
         isLoading.value = true
         if (!props.pet) {
@@ -205,12 +206,12 @@ export default defineComponent({
           emit('completedCreation', pet)
         } else {
           // actualizar
-          const res = await petService.update(pet)
+          pet.id = props.pet.id
+          await petService.update(pet)
           $q.notify({
             type: 'positive',
             message: `Mascota "${form.name}" actualizada correctamente`
           })
-          console.log(res)
           emit('completedUpdate', pet)
         }
       } catch (e) {

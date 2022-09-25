@@ -44,8 +44,8 @@ export class PetService {
       admitionCondition: pet.admitionCondition,
       notes: pet.notes,
       birthDate: pet.birthDate,
-      admitionDate: pet.admitionDate,
-      createdAt: pet.createdAt as string
+      admitionDate: pet.admitionDate
+      // createdAt: pet.createdAt as string
     }
     console.log(data)
     const res = await api.post('/v1/pets/update', data)

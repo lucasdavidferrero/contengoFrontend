@@ -16,7 +16,7 @@ export interface PetCreate {
 export interface PetUpdate extends PetCreate{
   id: number
   isAdopted: boolean
-  createdAt: string
+  // createdAt: string
 }
 
 export interface PetData extends PetUpdate {
