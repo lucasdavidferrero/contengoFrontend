@@ -6,7 +6,7 @@
         class="q-gutter-md"
         ref="qFormRef"
       >
-      <div class="text-h6 q-ma-none">Formulario Mascota</div>
+      <div class="text-h6 q-ma-none">Formulario Mascota - {{ !pet ? 'Crear' : 'Actualizar' }}</div>
       <div class="row q-col-gutter-md q-mt-md">
         <div class="col-xs-12 col-md-6">
           <q-input
@@ -187,7 +187,7 @@ export default defineComponent({
     ]
 
     async function onSubmit () {
-      // TODO Ver como solucionar la estructura de la fecha (debe ser 2022-05-23 y no 2022/05/23).
+      // TODO Ver como solucionar la estructura de la fecha (debe ser 2022-05-23).
       const pet = new Pet(0, form.idMicrochip || '', form.idInternal || '', form.name, form.sex, form.breed, form.specie.value,
         form.weightKg, form.admitionKind.value, form.admitionCondition, form.admitionDate.split('/').join('-'), form.birthDate.split('/').join('-'),
         form.notes || '', form.isAdopted)
