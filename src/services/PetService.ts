@@ -49,4 +49,9 @@ export class PetService {
     const res = await api.post('/v1/pets/update', data)
     return res.data
   }
+
+  async deleteById (id: number) {
+    const res = await api.get(`/v1/pets/delete/${id}`)
+    return res.data
+  }
 }
