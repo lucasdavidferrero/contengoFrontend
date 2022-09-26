@@ -4,9 +4,15 @@ import { Pet } from 'src/entities/Pet'
 
 export class PetService {
   async getAll () : Promise<PetData[]> {
+    // TODO -> Ver como mapear las fechas de la DB con las de JS.
     const res = await api.get('/v1/pets/list')
-
-    return res.data.pets as PetData[]
+    return res.data.pets.map((el) => {
+      const createdAtDate = new Date(el.createdAt)
+      el.birthDate = el.birthDate.join('/')
+      el.admitionDate = el.admitionDate.join('/')
+      el.createdAt = `${createdAtDate.getFullYear()}/${createdAtDate.getMonth() + 1}/${createdAtDate.getDate()}`
+      return el
+    }) as PetData[]
   }
 
   async createNew (pet: Pet) {
