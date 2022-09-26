@@ -4,7 +4,7 @@
       <q-card>
         <q-card-section class="row items-center">
           <q-avatar icon="signal_wifi_off" color="primary" text-color="white" />
-          <span class="q-ml-sm">¿Estas seguro?</span>
+          <span class="q-ml-sm">{{ title ? title : '¿Estás seguro?' }}</span>
         </q-card-section>
 
         <q-card-actions align="right">
@@ -21,6 +21,12 @@ import { defineComponent, ref } from 'vue'
 export default defineComponent({
   emits: ['confirmed', 'cancelled'],
   name: 'ConfirmDialog',
+  props: {
+    title: {
+      type: String,
+      default: null
+    }
+  },
   setup (_, { emit }) {
     const confirm = ref(false)
 
