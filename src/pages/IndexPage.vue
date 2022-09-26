@@ -19,7 +19,7 @@
     <div class="q-my-md">
       <q-btn label="Agregar" type="button" color="primary" @click="expandPetFormDialogCreation" :disabled="expandPetFormDialog"/>
     </div>
-    <div>
+    <div class="relative-position">
       <q-table
       :rows="pets"
       title="Mascotas"
@@ -42,6 +42,12 @@
         </q-td>
       </template>
     </q-table>
+    <q-inner-loading
+        :showing="isLoading"
+        label="Cargando..."
+        label-class="text-teal"
+        label-style="font-size: 1.1em"
+      />
     </div>
 
     <!-- Expand Dialog -->
@@ -77,6 +83,7 @@ import { PetService } from 'src/services/PetService'
 import { PetData } from 'src/components/models'
 import PetForm from 'src/components/PetForm.vue'
 import { Pet } from 'src/entities/Pet'
+import { useQuasar } from 'quasar'
 const petService = new PetService()
 
 export default defineComponent({
@@ -85,11 +92,13 @@ export default defineComponent({
   setup () {
     /* eslint-disable @typescript-eslint/no-explicit-any */
     const isFetchingList = ref(false)
+    const isLoading = ref(false)
     const expandDialog = ref(false)
     const expandPetFormDialog = ref(false)
     const selectedExpandedPet = ref() as Ref<PetData | null>
     const pets = ref([]) as Ref<PetData[]>
     const selectedPet = ref(null) as Ref<Pet> | Ref<null>
+    const $q = useQuasar()
 
     function getPetById (id: number) : PetData | null {
       const i = pets.value.findIndex(p => p.id === id)
@@ -187,14 +196,34 @@ export default defineComponent({
       expandPetFormDialog.value = true
     }
 
-    function onDeleteRow (row) {
-      // Invocar service que elimina y actualizar QTable.
-      console.log({ ...row })
+    async function onDeleteRow ({ id }) {
+      console.log(id)
+      try {
+        isLoading.value = true
+        const res = await petService.deleteById(id)
+        removeRowByPetId(id)
+        $q.notify({
+          type: 'positive',
+          message: 'Mascota eliminada correctamente'
+        })
+        console.log(res)
+      } catch (e) {
+        console.error(e)
+      } finally {
+        isLoading.value = false
+      }
+    }
+
+    function removeRowByPetId (id: number) {
+      const i = pets.value.findIndex(p => p.id === id)
+      if (i === -1) return
+      pets.value.splice(i, 1)
     }
 
     return {
       pets,
       isFetchingList,
+      isLoading,
       columnConf,
       expandDialog,
       selectedExpandedPet,
