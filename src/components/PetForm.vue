@@ -6,7 +6,7 @@
         class="q-gutter-md"
         ref="qFormRef"
       >
-      <div class="text-h6 q-ma-none">Formulario Mascota - {{ !pet ? 'Crear' : 'Actualizar' }}</div>
+      <div class="text-h6 q-ma-none">Formulario Mascota - {{ !pet ? 'Agregar' : 'Actualizar' }}</div>
       <div class="row q-col-gutter-md q-mt-md">
         <div class="col-xs-12 col-md-6">
           <q-input

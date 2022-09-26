@@ -38,41 +38,41 @@
       <template #body-cell-actions="props">
         <q-td :props="props">
           <q-btn flat round dense icon="edit" @click="onEditRow(props.row)"></q-btn>
-          <q-btn flat round dense icon="delete" @click="onDeleteRow(props.row)"></q-btn>
+          <q-btn flat round dense icon="delete" @click="onDeleteRow(props.row.id)"></q-btn>
         </q-td>
       </template>
-    </q-table>
-    <q-inner-loading
-        :showing="isLoading"
-        label="Cargando..."
-        label-class="text-teal"
-        label-style="font-size: 1.1em"
-      />
+      </q-table>
+      <q-inner-loading
+          :showing="isLoading"
+          label="Cargando..."
+          label-class="text-teal"
+          label-style="font-size: 1.1em"
+        />
     </div>
 
     <!-- Expand Dialog -->
     <div>
       <q-dialog
       v-model="expandDialog" @hide="onExpandDialogHide">
-      <q-card style="width: 700px; max-width: 80vw;">
-        <q-card-section>
-          <div class="text-h6">Más info de {{selectedExpandedPet?.name}}</div>
-        </q-card-section>
+        <q-card style="width: 700px; max-width: 80vw;">
+          <q-card-section>
+            <div class="text-h6">Más info de {{selectedExpandedPet?.name}}</div>
+          </q-card-section>
 
-        <q-card-section class="q-pt-none">
-          <p>ID: {{selectedExpandedPet?.id}}</p>
-          <p>Fecha creado: {{selectedExpandedPet?.createdAt}}</p>
-          <p>Sexo: {{selectedExpandedPet?.sex}}</p>
-          <p>Peso (KG): {{selectedExpandedPet?.weightKg}}</p>
-          <p>Año nacimiento: {{selectedExpandedPet?.birthDate}}</p>
-          <div>Notas: {{selectedExpandedPet?.notes}}</div>
-        </q-card-section>
+          <q-card-section class="q-pt-none">
+            <p>ID: {{selectedExpandedPet?.id}}</p>
+            <p>Fecha creado: {{selectedExpandedPet?.createdAt}}</p>
+            <p>Sexo: {{selectedExpandedPet?.sex}}</p>
+            <p>Peso (KG): {{selectedExpandedPet?.weightKg}}</p>
+            <p>Año nacimiento: {{selectedExpandedPet?.birthDate}}</p>
+            <div>Notas: {{selectedExpandedPet?.notes}}</div>
+          </q-card-section>
 
-        <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn flat label="OK" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+          <q-card-actions align="right" class="bg-white text-teal">
+            <q-btn flat label="OK" v-close-popup />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </div>
   </q-page>
 </template>
@@ -196,7 +196,7 @@ export default defineComponent({
       expandPetFormDialog.value = true
     }
 
-    async function onDeleteRow ({ id }) {
+    async function onDeleteRow (id: number) {
       console.log(id)
       try {
         isLoading.value = true
