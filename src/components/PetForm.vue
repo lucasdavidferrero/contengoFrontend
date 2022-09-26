@@ -135,6 +135,7 @@ import { defineComponent, PropType, reactive, ref, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import { required, positiveNumber, requiredNum } from 'src/utils/Rules'
 import { PetService } from 'src/services/PetService'
+import { showNotify } from 'src/plugins/globalNotify'
 const petService = new PetService()
 export default defineComponent({
   emits: ['completedUpdate', 'completedCreation', 'aborted'],
@@ -196,10 +197,11 @@ export default defineComponent({
         if (!props.pet) {
           // crear
           const res = await petService.createNew(pet)
-          $q.notify({
+          showNotify(`Mascota "${form.name}" creada exitosamente`)
+          /* $q.notify({
             type: 'positive',
             message: `Mascota "${form.name}" creada exitosamente`
-          })
+          }) */
           pet.id = res.id
           pet.createdAt = new Date(res.createdAt * 1000).toString()
           emit('completedCreation', pet)
@@ -207,10 +209,11 @@ export default defineComponent({
           // actualizar
           pet.id = props.pet.id
           await petService.update(pet)
-          $q.notify({
+          showNotify(`Mascota "${form.name}" actualizada correctamente`)
+          /* $q.notify({
             type: 'positive',
             message: `Mascota "${form.name}" actualizada correctamente`
-          })
+          }) */
           emit('completedUpdate', pet)
         }
       } catch (e) {
