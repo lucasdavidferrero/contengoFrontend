@@ -1,22 +1,21 @@
-import { PetData, PetCreate, PetUpdate, PetCreateResponse } from './../components/models'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { PetDataListRes, PetDataRes, PetFormCreateReq, PetFormUpdateReq, PetCreateRes } from './../models/PetReqRes'
+import { GeneralUpdateRes } from 'src/models/GeneralReqRes'
 import { api } from 'src/boot/axios'
 import { Pet } from 'src/entities/Pet'
 
 export class PetService {
-  async getAll () : Promise<PetData[]> {
-    // TODO -> Ver como mapear las fechas de la DB con las de JS.
+  async getAll () : Promise<PetDataRes[]> {
     const res = await api.get('/v1/pets/list')
-    return res.data.pets.map((el) => {
-      const createdAtDate = new Date(el.createdAt)
-      el.birthDate = el.birthDate.join('/')
-      el.admitionDate = el.admitionDate.join('/')
-      el.createdAt = `${createdAtDate.getFullYear()}/${createdAtDate.getMonth() + 1}/${createdAtDate.getDate()}`
-      return el
-    }) as PetData[]
+    const resData = res.data as PetDataListRes
+
+    return resData.pets.map((el) => {
+      return this.serializePetDataFromResponse(el) as PetDataRes
+    })
   }
 
   async createNew (pet: Pet) {
-    const data : PetCreate = {
+    const data : PetFormCreateReq = {
       idMicrochip: pet.idMicrochip,
       idInternal: pet.idInternal,
       name: pet.name,
@@ -32,11 +31,11 @@ export class PetService {
     }
 
     const res = await api.post('/v1/pets/create', data)
-    return res.data as Promise<PetCreateResponse>
+    return res.data as Promise<PetCreateRes>
   }
 
   async update (pet: Pet) {
-    const data: PetUpdate = {
+    const data: PetFormUpdateReq = {
       id: pet.id,
       isAdopted: pet.isAdopted,
       idMicrochip: pet.idMicrochip,
@@ -58,6 +57,17 @@ export class PetService {
 
   async deleteById (id: number) {
     const res = await api.get(`/v1/pets/delete/${id}`)
-    return res.data
+    return res.data as GeneralUpdateRes
+  }
+
+  /**
+   * Función para acomodar la fecha del Response a Javascript.
+   */
+  private serializePetDataFromResponse (pet: any): PetDataRes {
+    const createdAtDate = new Date(pet.createdAt)
+    pet.birthDate = pet.birthDate.join('/')
+    pet.admitionDate = pet.admitionDate.join('/')
+    pet.createdAt = `${createdAtDate.getFullYear()}/${createdAtDate.getMonth() + 1}/${createdAtDate.getDate()}`
+    return pet as PetDataRes
   }
 }
