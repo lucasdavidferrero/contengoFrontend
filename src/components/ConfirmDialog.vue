@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 export default defineComponent({
   emits: ['confirmed', 'cancelled'],
   name: 'ConfirmDialog',
@@ -25,13 +25,21 @@ export default defineComponent({
     title: {
       type: String,
       default: null
+    },
+    opened: {
+      type: Boolean,
+      default: false
     }
   },
-  setup (_, { emit }) {
+  setup (props, { emit }) {
     const confirm = ref(false)
 
     const onConfirm = () => emit('confirmed')
     const onCancelled = () => emit('cancelled')
+
+    watch(() => props.opened, (newVal) => {
+      confirm.value = newVal
+    })
 
     return {
       onConfirm,

@@ -74,6 +74,10 @@
         </q-card>
       </q-dialog>
     </div>
+
+    <div>
+      <ConfirmDialog :opened="confirmDialogState" @confirmed="true" @cancelled="true" />
+    </div>
   </q-page>
 </template>
 
@@ -84,11 +88,12 @@ import { PetDataRes } from 'src/models/PetReqRes'
 import PetForm from 'src/components/PetForm.vue'
 import { Pet } from 'src/entities/Pet'
 import { useQuasar } from 'quasar'
+import ConfirmDialog from 'src/components/ConfirmDialog.vue'
 const petService = new PetService()
 
 export default defineComponent({
   name: 'IndexPage',
-  components: { PetForm },
+  components: { PetForm, ConfirmDialog },
   setup () {
     /* eslint-disable @typescript-eslint/no-explicit-any */
     const isFetchingList = ref(false)
@@ -99,6 +104,8 @@ export default defineComponent({
     const pets = ref([]) as Ref<PetDataRes[]>
     const selectedPet = ref(null) as Ref<Pet> | Ref<null>
     const $q = useQuasar()
+    const confirmDialogState = ref(false)
+    const selectedIdForDelete = ref(-1)
 
     function getPetById (id: number) : PetDataRes | null {
       const i = pets.value.findIndex(p => p.id === id)
@@ -219,6 +226,29 @@ export default defineComponent({
       if (i === -1) return
       pets.value.splice(i, 1)
     }
+    /*
+    function onDeleteRow (id: number) {
+      selectedIdForDelete.value = id
+    }
+
+    async function onDeleteConfirm () {
+      closeConfirmDialogDelete()
+      await deletePet(selectedIdForDelete.value)
+      resetStateIdSelectedForDelete()
+    }
+
+    function onDeleteCancel () {
+      closeConfirmDialogDelete()
+      resetStateIdSelectedForDelete()
+    }
+
+    function closeConfirmDialogDelete () {
+      confirmDialogState.value = false
+    }
+
+    function resetStateIdSelectedForDelete () {
+      selectedIdForDelete.value = -1
+    } */
 
     return {
       pets,
@@ -228,6 +258,7 @@ export default defineComponent({
       expandDialog,
       selectedExpandedPet,
       expandPetFormDialog,
+      confirmDialogState,
       expandPetFormDialogCreation,
       selectedPet,
       onPetCreation,
@@ -236,7 +267,10 @@ export default defineComponent({
       onExpandDialogHide,
       onExpandDialogAbort,
       onEditRow,
-      onDeleteRow
+      onDeleteRow,
+      // onDeleteConfirm,
+      // onDeleteCancel,
+      selectedIdForDelete
     }
   }
 })
