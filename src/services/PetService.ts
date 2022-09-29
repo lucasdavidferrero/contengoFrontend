@@ -61,13 +61,25 @@ export class PetService {
   }
 
   /**
-   * Función para acomodar la fecha del Response a Javascript.
+   * Función para acomodar la fecha del Response(Java/Spring) a Javascript.
    */
   private serializePetDataFromResponse (pet: any): PetDataRes {
     const createdAtDate = new Date(pet.createdAt)
+    pet.birthDate = this.serializeDateForQSelectFromArray(pet.birthDate)
+    pet.admitionDate = this.serializeDateForQSelectFromArray(pet.admitionDate)
     pet.birthDate = pet.birthDate.join('/')
     pet.admitionDate = pet.admitionDate.join('/')
-    pet.createdAt = `${createdAtDate.getFullYear()}/${createdAtDate.getMonth() + 1}/${createdAtDate.getDate()}`
+    pet.createdAt = `${createdAtDate.getFullYear()}/${this.prependZeroIfLessThanTen(createdAtDate.getMonth() + 1)}/${this.prependZeroIfLessThanTen(createdAtDate.getDate())}`
     return pet as PetDataRes
+  }
+
+  private serializeDateForQSelectFromArray (dateArray: number[]) {
+    // TODO Esto debería ser lógica de componente.
+    if (!dateArray.length) return ''
+    return dateArray.map(num => this.prependZeroIfLessThanTen(num))
+  }
+
+  private prependZeroIfLessThanTen (num: number) {
+    return num >= 10 ? num.toString() : '0' + num
   }
 }

@@ -132,11 +132,11 @@
 <script lang="ts">
 import { Pet } from 'src/entities/Pet'
 import { defineComponent, PropType, reactive, ref, onMounted } from 'vue'
-// import { useQuasar } from 'quasar'
 import { required, positiveNumber, requiredNum } from 'src/utils/Rules'
 import { PetService } from 'src/services/PetService'
 import { showNotify } from 'src/plugins/globalNotify'
 import { AdmitionKindEnum, SexEnum, SpeciesEnum } from 'src/models/Enums'
+
 const petService = new PetService()
 export default defineComponent({
   emits: ['completedUpdate', 'completedCreation', 'aborted'],
@@ -173,8 +173,6 @@ export default defineComponent({
       requiredNum
     }
 
-    // const $q = useQuasar()
-
     const qFormRef = ref(null)
 
     const specieOptions = Object.values(SpeciesEnum)
@@ -183,8 +181,8 @@ export default defineComponent({
 
     async function onSubmit () {
       // TODO Ver como solucionar la estructura de la fecha (debe ser 2022-05-23).
-      const pet = new Pet(0, form.idMicrochip || '', form.idInternal || '', form.name, form.sex, form.breed, form.specie.value,
-        form.weightKg, form.admitionKind.value, form.admitionCondition, form.admitionDate.split('/').join('-'), form.birthDate.split('/').join('-'),
+      const pet = new Pet(0, form.idMicrochip || '', form.idInternal || '', form.name, form.sex, form.breed, form.specie,
+        form.weightKg, form.admitionKind, form.admitionCondition, form.admitionDate.split('/').join('-'), form.birthDate.split('/').join('-'),
         form.notes || '', form.isAdopted)
       try {
         isLoading.value = true
