@@ -80,7 +80,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, Ref } from 'vue'
 import { PetService } from 'src/services/PetService'
-import { PetData } from 'src/components/models'
+import { PetDataRes } from 'src/models/PetReqRes'
 import PetForm from 'src/components/PetForm.vue'
 import { Pet } from 'src/entities/Pet'
 import { useQuasar } from 'quasar'
@@ -95,12 +95,12 @@ export default defineComponent({
     const isLoading = ref(false)
     const expandDialog = ref(false)
     const expandPetFormDialog = ref(false)
-    const selectedExpandedPet = ref() as Ref<PetData | null>
-    const pets = ref([]) as Ref<PetData[]>
+    const selectedExpandedPet = ref() as Ref<PetDataRes | null>
+    const pets = ref([]) as Ref<PetDataRes[]>
     const selectedPet = ref(null) as Ref<Pet> | Ref<null>
     const $q = useQuasar()
 
-    function getPetById (id: number) : PetData | null {
+    function getPetById (id: number) : PetDataRes | null {
       const i = pets.value.findIndex(p => p.id === id)
       if (i !== -1) return pets.value[i]
       return null
@@ -110,7 +110,7 @@ export default defineComponent({
       try {
         isFetchingList.value = true
         const petsFound = await petService.getAll()
-        pets.value = petsFound
+        if (petsFound?.length) { pets.value = petsFound }
       } catch (e) {
         console.error(e)
       } finally {

@@ -5,9 +5,10 @@ import { api } from 'src/boot/axios'
 import { Pet } from 'src/entities/Pet'
 
 export class PetService {
-  async getAll () : Promise<PetDataRes[]> {
+  async getAll () : Promise<PetDataRes[] | null> {
     const res = await api.get('/v1/pets/list')
     const resData = res.data as PetDataListRes
+    if (!resData.pets) return null
 
     return resData.pets.map((el) => {
       return this.serializePetDataFromResponse(el) as PetDataRes
@@ -29,7 +30,7 @@ export class PetService {
       birthDate: pet.birthDate,
       admitionDate: pet.admitionDate
     }
-
+    // debugger
     const res = await api.post('/v1/pets/create', data)
     return res.data as Promise<PetCreateRes>
   }
