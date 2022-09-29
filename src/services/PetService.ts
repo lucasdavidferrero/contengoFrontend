@@ -30,7 +30,6 @@ export class PetService {
       birthDate: pet.birthDate,
       admitionDate: pet.admitionDate
     }
-    // debugger
     const res = await api.post('/v1/pets/create', data)
     return res.data as Promise<PetCreateRes>
   }
