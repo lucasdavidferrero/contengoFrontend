@@ -132,10 +132,11 @@
 <script lang="ts">
 import { Pet } from 'src/entities/Pet'
 import { defineComponent, PropType, reactive, ref, onMounted } from 'vue'
-import { useQuasar } from 'quasar'
+// import { useQuasar } from 'quasar'
 import { required, positiveNumber, requiredNum } from 'src/utils/Rules'
 import { PetService } from 'src/services/PetService'
 import { showNotify } from 'src/plugins/globalNotify'
+import { AdmitionKindEnum, SexEnum, SpeciesEnum } from 'src/models/Enums'
 const petService = new PetService()
 export default defineComponent({
   emits: ['completedUpdate', 'completedCreation', 'aborted'],
@@ -150,13 +151,13 @@ export default defineComponent({
     /* eslint-disable @typescript-eslint/no-explicit-any */
     const form = reactive({
       name: '',
-      specie: null as any,
+      specie: '',
       breed: '',
       weightKg: 0,
-      sex: null as any,
+      sex: '',
       birthDate: '',
       admitionDate: '',
-      admitionKind: '' as any,
+      admitionKind: '',
       admitionCondition: '',
       isAdopted: false,
       notes: '',
@@ -172,20 +173,13 @@ export default defineComponent({
       requiredNum
     }
 
-    const $q = useQuasar()
+    // const $q = useQuasar()
 
     const qFormRef = ref(null)
 
-    const specieOptions = [{ label: 'Perro', value: 'perro' }, { label: 'Gato', value: 'gato' }, { label: 'Otro', value: 'otro' }]
-    const sexOptions = [{ label: 'Macho', value: 'macho' }, { label: 'Hembra', value: 'hembra' }, { label: 'Otro', value: 'otro' }]
-    const admitionKindOptions = [
-      { label: 'Perdido', value: 'perdido' },
-      { label: 'Abandonado', value: 'abandonado' },
-      { label: 'Maltrato', value: 'maltrato' },
-      { label: 'Recién nacido', value: 'recienNacido' },
-      { label: 'Dueño entrega', value: 'duenioEntrega' },
-      { label: 'Otro', value: 'otro' }
-    ]
+    const specieOptions = Object.values(SpeciesEnum)
+    const sexOptions = Object.values(SexEnum)
+    const admitionKindOptions = Object.values(AdmitionKindEnum)
 
     async function onSubmit () {
       // TODO Ver como solucionar la estructura de la fecha (debe ser 2022-05-23).
@@ -198,10 +192,6 @@ export default defineComponent({
           // crear
           const res = await petService.createNew(pet)
           showNotify(`Mascota "${form.name}" creada exitosamente`)
-          /* $q.notify({
-            type: 'positive',
-            message: `Mascota "${form.name}" creada exitosamente`
-          }) */
           pet.id = res.id
           pet.createdAt = new Date(res.createdAt * 1000).toString()
           emit('completedCreation', pet)
@@ -210,10 +200,6 @@ export default defineComponent({
           pet.id = props.pet.id
           await petService.update(pet)
           showNotify(`Mascota "${form.name}" actualizada correctamente`)
-          /* $q.notify({
-            type: 'positive',
-            message: `Mascota "${form.name}" actualizada correctamente`
-          }) */
           emit('completedUpdate', pet)
         }
       } catch (e) {
