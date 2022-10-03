@@ -8,7 +8,12 @@
           </q-avatar>
           Contengo
         </q-toolbar-title>
+        <q-tabs v-model="tab">
+          <q-route-tab name="inicio" label="Inicio" :to="{ name: 'indexPage' }" exact/>
+          <q-route-tab name="eventosMedicos" label="Eventos Médicos" :to="{ name: 'medicalEventsPage' }" exact/>
+        </q-tabs>
       </q-toolbar>
+
     </q-header>
 
     <q-page-container>
@@ -18,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -26,7 +31,10 @@ export default defineComponent({
   components: {},
 
   setup () {
-    return {}
+    const tab = ref('inicio')
+    return {
+      tab
+    }
   }
 })
 </script>
