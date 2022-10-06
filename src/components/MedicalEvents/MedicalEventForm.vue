@@ -16,23 +16,39 @@
             />
         </div>
         <div class="col-xs-12 col-md-6">
-          <q-input
-            v-model="form.headerDate"
-            mask="date"
-            label="Fecha"
-            :rules="[fRules.required, 'date']" lazy-rules/>
-            <!--mask="hh:mm A"-->
-        </div>
-        <div class="col-xs-12 col-md-6">
-          <q-input
-            v-model="form.headerTime"
-            mask="hh:mm"
-            label="Hora *"
-            :rules="[fRules.required, 'time']" lazy-rules/>
+          <q-input v-model="form.headerDate" mask="date" :rules="['date']">
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-date v-model="form.headerDate">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="OK" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
         </div>
       </div>
       <div class="row q-col-gutter-md q-mt-md">
-        <div class="col-xs-12 col-md-12">
+        <div class="col-xs-12 col-md-6">
+          <q-input v-model="form.headerTime" mask="time" :rules="['time']">
+            <template v-slot:append>
+              <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-time v-model="form.headerTime" format24h>
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="OK" color="primary" flat />
+                    </div>
+                  </q-time>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </div>
+
+        <div class="col-xs-12 col-md-6">
           <q-input
             v-model="form.vetName"
             label="Veterinario"/>
