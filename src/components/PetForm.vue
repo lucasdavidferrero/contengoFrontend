@@ -113,7 +113,7 @@
       </div>
 
       <div class="row justify-center">
-        <q-btn label="Cancelar" type="button" color="primary" flat class="q-ml-sm" @click="onAbort"/>
+        <q-btn label="Cancelar" type="button" color="primary" flat class="q-mr-sm" @click="onAbort"/>
         <q-btn label="Guardar" type="submit" color="primary"/>
       </div>
 
