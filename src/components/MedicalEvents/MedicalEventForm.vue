@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="q-card q-pa-md">
     <div class="q-pa-lg relative-position">
       <q-form
         @submit="onSubmit"
@@ -54,6 +54,13 @@
             label="Veterinario"/>
         </div>
       </div>
+
+      <section class="q-ml-none">
+        <h2 class="text-h6 q-ma-none">Detalle</h2>
+        <div class="row q-mt-sm">
+          <q-btn round type="submit" color="primary" icon="add"/>
+        </div>
+      </section>
 
       <div class="row q-col-gutter-md q-mt-md">
         <div class="col-xs-12 col-md-12">
