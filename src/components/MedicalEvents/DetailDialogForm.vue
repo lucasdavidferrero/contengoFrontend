@@ -3,9 +3,13 @@
     <q-dialog v-model="dialog" persistent>
       <q-card>
         <q-card-section class="row items-center">
-          <q-avatar icon="question_mark" color="primary" text-color="white" />
-        </q-card-section>
 
+        </q-card-section>
+        <!-- TODO
+          [] Agregar los fields
+          [] Validaciones
+          [] Emitir objeto al componente del form para que lo muestre en una tabla
+        -->
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" v-close-popup @click="onCancelled"/>
           <q-btn flat label="Añadir" color="primary" v-close-popup @click="onAdd"/>
