@@ -58,7 +58,7 @@
       <section class="q-ml-none">
         <h2 class="text-h6 q-ma-none">Detalle</h2>
         <div class="row q-mt-sm">
-          <q-btn round type="submit" color="primary" icon="add"/>
+          <q-btn round type="submit" color="primary" icon="add" @click="openDetailDialogForm"/>
         </div>
       </section>
 
@@ -78,14 +78,20 @@
 
       </q-form>
     </div>
+    <div>
+      <DetailDialogForm @added="onDetailDialogAdded" @cancelled="onDetailDialogCancelled"
+        :opened="detailDialog"/>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import { required, positiveNumber, requiredNum } from 'src/utils/Rules'
+import DetailDialogForm from './DetailDialogForm.vue'
 export default defineComponent({
   name: 'MedicalEventForm',
+  components: { DetailDialogForm },
   setup () {
     const form = reactive({
       idMascota: '',
@@ -95,6 +101,8 @@ export default defineComponent({
       observations: ''
     })
 
+    const detailDialog = ref(false)
+
     const onSubmit = () => console.log('Submit the form')
 
     const fRules = {
@@ -103,10 +111,30 @@ export default defineComponent({
       requiredNum
     }
 
+    function onDetailDialogAdded () {
+      closeDialog()
+    }
+
+    function onDetailDialogCancelled () {
+      closeDialog()
+    }
+
+    function openDetailDialogForm () {
+      detailDialog.value = true
+    }
+
+    function closeDialog () {
+      detailDialog.value = false
+    }
+
     return {
-      onSubmit,
       form,
-      fRules
+      fRules,
+      detailDialog,
+      onDetailDialogCancelled,
+      onDetailDialogAdded,
+      openDetailDialogForm,
+      onSubmit
     }
   }
 })

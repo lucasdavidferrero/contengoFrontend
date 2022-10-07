@@ -18,7 +18,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue'
 export default defineComponent({
-  emits: ['cancelled'],
+  emits: ['cancelled', 'added'],
   name: 'DetailDialogForm',
   props: {
     opened: {
@@ -34,7 +34,7 @@ export default defineComponent({
     }
 
     function onAdd () {
-      console.log('add -->')
+      emit('added')
     }
 
     watch(() => props.opened, (newVal) => {
