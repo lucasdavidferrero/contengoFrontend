@@ -79,8 +79,7 @@
       </q-form>
     </div>
     <div>
-      <DetailDialogForm @added="onDetailDialogAdded" @cancelled="onDetailDialogCancelled"
-        :opened="detailDialog"/>
+      <DetailDialogForm @added="onDetailDialogAdded" @cancelled="onDetailDialogCancelled" :opened="detailDialog"/>
     </div>
   </div>
 </template>
