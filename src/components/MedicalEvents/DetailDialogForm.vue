@@ -17,11 +17,12 @@
               <div class="col-xs-12 col-md-6">
                 <q-input
                   v-model.number="formState.quantity"
-                  label="Cantidad"/>
+                  label="Cantidad" :rules="[fRules.requiredNum, fRules.positiveNumber]"/>
               </div>
               <div class="col-xs-12 col-md-6">
                 <q-input
                   v-model.number="formState.unitPrice"
+                  :rules="[fRules.requiredNum, fRules.positiveNumber]"
                   label="P.Unitario"/>
               </div>
               <div class="col-xs-12 col-md-6">
@@ -34,7 +35,7 @@
         </q-card-section>
         <q-card-actions align="center" class="q-mt-md">
           <q-btn flat label="Cancelar" color="primary" v-close-popup @click="onCancelled"/>
-          <q-btn label="Añadir" color="primary" @click="onSubmit" v-close-popup/>
+          <q-btn label="Añadir" color="primary" @click="onSubmit"/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -48,6 +49,7 @@
 <script lang="ts">
 import { QForm } from 'quasar'
 import { defineComponent, ref, reactive, watch, Ref } from 'vue'
+import { required, positiveNumber, requiredNum } from 'src/utils/Rules'
 export default defineComponent({
   emits: ['cancelled', 'added'],
   name: 'DetailDialogForm',
@@ -67,11 +69,18 @@ export default defineComponent({
       finalPrice: 0
     })
 
+    const fRules = {
+      required,
+      positiveNumber,
+      requiredNum
+    }
+
     async function onSubmit () {
       console.log(formState)
       try {
         const isFormValid = await qFormDetailRef.value.validate(true)
-        if (isFormValid) emit('added')
+        debugger
+        if (isFormValid) { emit('added') }
       } catch (e) { console.error(e) }
     }
 
@@ -86,6 +95,7 @@ export default defineComponent({
     return {
       formState,
       dialog,
+      fRules,
       onCancelled,
       onSubmit,
       qFormDetailRef
