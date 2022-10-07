@@ -88,6 +88,7 @@
 import { defineComponent, reactive, ref } from 'vue'
 import { required, positiveNumber, requiredNum } from 'src/utils/Rules'
 import DetailDialogForm from './DetailDialogForm.vue'
+import { MedicalEvent } from 'src/models/MedicalEvent'
 export default defineComponent({
   name: 'MedicalEventForm',
   components: { DetailDialogForm },
@@ -110,8 +111,9 @@ export default defineComponent({
       requiredNum
     }
 
-    function onDetailDialogAdded () {
+    function onDetailDialogAdded (rowDetail: MedicalEvent.rowDetail) {
       closeDialog()
+      console.log(rowDetail)
     }
 
     function onDetailDialogCancelled () {
