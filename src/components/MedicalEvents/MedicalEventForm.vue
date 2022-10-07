@@ -16,7 +16,7 @@
             />
         </div>
         <div class="col-xs-12 col-md-6">
-          <q-input v-model="form.headerDate" mask="date" :rules="['date']">
+          <q-input v-model="form.headerDate" mask="date" :rules="['date']" label="Fecha">
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -33,7 +33,7 @@
       </div>
       <div class="row q-col-gutter-md q-mt-md">
         <div class="col-xs-12 col-md-6">
-          <q-input v-model="form.headerTime" mask="time" :rules="['time']">
+          <q-input v-model="form.headerTime" mask="time" :rules="['time']" label="Hora">
             <template v-slot:append>
               <q-icon name="access_time" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -56,9 +56,46 @@
       </div>
 
       <section class="q-ml-none">
-        <h2 class="text-h6 q-ma-none">Detalle</h2>
-        <div class="row q-mt-sm">
-          <q-btn round type="submit" color="primary" icon="add" @click="openDetailDialogForm"/>
+        <div>
+          <q-markup-table flat bordered>
+            <thead>
+              <tr>
+                <th colspan="5">
+                  <div class="row no-wrap items-center">
+                    <q-btn round type="submit" color="primary" icon="add" @click="openDetailDialogForm" outline/>
+                    <h2 class="text-h6 q-ma-none q-ml-md">Detalle</h2>
+                  </div>
+                </th>
+              </tr>
+              <tr>
+                <th class="text-left">Descripción</th>
+                <th class="text-right">Cantidad</th>
+                <th class="text-right">P.Unitario</th>
+                <th class="text-right">Importe</th>
+                <th class="text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="bg-grey-3">
+              <tr v-for="detail in details" :key="detail.description">
+                <td class="text-left">{{ detail.description }}</td>
+                <td class="text-right">{{ detail.quantity }}</td>
+                <td class="text-right">{{ detail.unitPrice }}</td>
+                <td class="text-right">{{ detail.finalPrice }}</td>
+                <td class="text-center">
+                  Eliminar
+                </td>
+              </tr>
+            </tbody>
+            <tfoot class="q-pa-md" colspan="5">
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="text-right text-weight-bold text-accent text-h5">Total ${{ total }}</td>
+              </tr>
+            </tfoot>
+          </q-markup-table>
         </div>
       </section>
 
@@ -85,7 +122,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, reactive, ref, Ref, computed } from 'vue'
 import { required, positiveNumber, requiredNum } from 'src/utils/Rules'
 import DetailDialogForm from './DetailDialogForm.vue'
 import { MedicalEvent } from 'src/models/MedicalEvent'
@@ -101,6 +138,8 @@ export default defineComponent({
       observations: ''
     })
 
+    const details = ref([])as Ref<MedicalEvent.rowDetail[]>
+
     const detailDialog = ref(false)
 
     const onSubmit = () => console.log('Submit the form')
@@ -113,7 +152,7 @@ export default defineComponent({
 
     function onDetailDialogAdded (rowDetail: MedicalEvent.rowDetail) {
       closeDialog()
-      console.log(rowDetail)
+      details.value.push(rowDetail)
     }
 
     function onDetailDialogCancelled () {
@@ -128,10 +167,20 @@ export default defineComponent({
       detailDialog.value = false
     }
 
+    const total = computed(() => {
+      let accTotal = 0
+      details.value.forEach((e) => {
+        accTotal += e.finalPrice
+      })
+      return accTotal
+    })
+
     return {
       form,
       fRules,
       detailDialog,
+      details,
+      total,
       onDetailDialogCancelled,
       onDetailDialogAdded,
       openDetailDialogForm,

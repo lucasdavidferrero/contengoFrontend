@@ -12,7 +12,7 @@
               <div class="col-xs-12 col-md-6">
                 <q-input
                   v-model="formState.description"
-                  label="Descripcion" autogrow
+                  label="Descripcion" autogrow autofocus
                   :rules="[fRules.required]"/>
               </div>
               <div class="col-xs-12 col-md-6">
@@ -44,11 +44,6 @@
     </q-dialog>
   </div>
 </template>
-<!-- TODO
-          [*] Agregar los fields
-          [] Validaciones
-          [] Emitir objeto al componente del form para que lo muestre en una tabla
-        -->
 <script lang="ts">
 import { QForm } from 'quasar'
 import { defineComponent, ref, reactive, watch, Ref, computed } from 'vue'
