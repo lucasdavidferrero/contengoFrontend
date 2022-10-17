@@ -76,13 +76,13 @@
               </tr>
             </thead>
             <tbody class="bg-grey-3">
-              <tr v-for="detail in details" :key="detail.description">
+              <tr v-for="(detail, i) in details" :key="detail.description">
                 <td class="text-left">{{ detail.description }}</td>
                 <td class="text-right">{{ detail.quantity }}</td>
                 <td class="text-right">{{ detail.unitPrice }}</td>
                 <td class="text-right">{{ detail.finalPrice }}</td>
                 <td class="text-center">
-                  Eliminar
+                  <q-btn color="accent" icon="delete" @click="onDeleteRow(i)" outline round />
                 </td>
               </tr>
             </tbody>
@@ -167,6 +167,10 @@ export default defineComponent({
       detailDialog.value = false
     }
 
+    function onDeleteRow (rowIndex: number) {
+      details.value.splice(rowIndex, 1)
+    }
+
     const total = computed(() => {
       let accTotal = 0
       details.value.forEach((e) => {
@@ -184,7 +188,8 @@ export default defineComponent({
       onDetailDialogCancelled,
       onDetailDialogAdded,
       openDetailDialogForm,
-      onSubmit
+      onSubmit,
+      onDeleteRow
     }
   }
 })
