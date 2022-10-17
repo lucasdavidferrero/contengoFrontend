@@ -122,10 +122,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, Ref, computed } from 'vue'
+import { defineComponent, reactive, ref, Ref, computed, unref } from 'vue'
 import { required, positiveNumber, requiredNum } from 'src/utils/Rules'
 import DetailDialogForm from './DetailDialogForm.vue'
 import { MedicalEvent } from 'src/models/MedicalEvent'
+import { EventoMedicoService } from 'src/services/EventoMedicoService'
+const eventoMedicoService = new EventoMedicoService()
+
 export default defineComponent({
   name: 'MedicalEventForm',
   components: { DetailDialogForm },
@@ -138,11 +141,38 @@ export default defineComponent({
       observations: ''
     })
 
-    const details = ref([])as Ref<MedicalEvent.rowDetail[]>
+    const details = ref([]) as Ref<MedicalEvent.rowDetail[]>
 
     const detailDialog = ref(false)
 
-    const onSubmit = () => console.log('Submit the form')
+    const onSubmit = () => {
+      const data = buildRequestObject()
+      eventoMedicoService.create(data)
+    }
+
+    function buildRequestObject () {
+      const createUpdateReq = {
+        idMascota: form.idMascota,
+        headerDate: form.headerDate,
+        headerTime: form.headerTime,
+        vetName: form.vetName,
+        observations: form.observations,
+        rows: [] as MedicalEvent.rowDetail[]
+      }
+
+      if (details.value.length) {
+        details.value.forEach((e) => {
+          createUpdateReq.rows.push({
+            description: e.description,
+            quantity: e.quantity,
+            unitPrice: e.unitPrice,
+            finalPrice: e.finalPrice
+          })
+        })
+        console.log(createUpdateReq.rows)
+      }
+      return createUpdateReq
+    }
 
     const fRules = {
       required,
