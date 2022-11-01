@@ -8,8 +8,6 @@ export namespace MedicalEvent {
 
   export interface createReq {
     idMascota: string
-    headerDate: string
-    headerTime: string
     vetName: string
     observations: string
     rows: rowDetail[]

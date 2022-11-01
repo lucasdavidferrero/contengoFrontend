@@ -15,7 +15,7 @@
             :rules="[fRules.required]" lazy-rules
             />
         </div>
-        <div class="col-xs-12 col-md-6">
+        <!-- <div class="col-xs-12 col-md-6">
           <q-input v-model="form.headerDate" mask="date" :rules="['date']" label="Fecha">
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -29,10 +29,10 @@
               </q-icon>
             </template>
           </q-input>
-        </div>
+        </div> -->
       </div>
       <div class="row q-col-gutter-md q-mt-md">
-        <div class="col-xs-12 col-md-6">
+        <!--<div class="col-xs-12 col-md-6">
           <q-input v-model="form.headerTime" mask="time" :rules="['time']" label="Hora">
             <template v-slot:append>
               <q-icon name="access_time" class="cursor-pointer">
@@ -46,7 +46,7 @@
               </q-icon>
             </template>
           </q-input>
-        </div>
+        </div> -->
 
         <div class="col-xs-12 col-md-6">
           <q-input
@@ -62,7 +62,7 @@
               <tr>
                 <th colspan="5">
                   <div class="row no-wrap items-center">
-                    <q-btn round type="submit" color="primary" icon="add" @click="openDetailDialogForm" outline/>
+                    <q-btn round type="button" color="primary" icon="add" @click="openDetailDialogForm" outline/>
                     <h2 class="text-h6 q-ma-none q-ml-md">Detalle</h2>
                   </div>
                 </th>
@@ -114,6 +114,12 @@
       </div>
 
       </q-form>
+      <q-inner-loading
+        :showing="isLoading"
+        label="Cargando..."
+        label-class="text-teal"
+        label-style="font-size: 1.1em"
+      />
     </div>
     <div>
       <DetailDialogForm @added="onDetailDialogAdded" @cancelled="onDetailDialogCancelled" :opened="detailDialog"/>
@@ -122,11 +128,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, Ref, computed, unref } from 'vue'
+import { defineComponent, reactive, ref, Ref, computed } from 'vue'
 import { required, positiveNumber, requiredNum } from 'src/utils/Rules'
 import DetailDialogForm from './DetailDialogForm.vue'
 import { MedicalEvent } from 'src/models/MedicalEvent'
 import { EventoMedicoService } from 'src/services/EventoMedicoService'
+import { showNotify } from 'src/plugins/globalNotify'
+import { QForm } from 'quasar'
 const eventoMedicoService = new EventoMedicoService()
 
 export default defineComponent({
@@ -135,8 +143,8 @@ export default defineComponent({
   setup () {
     const form = reactive({
       idMascota: '',
-      headerDate: '',
-      headerTime: '',
+      // headerDate: '',
+      // headerTime: '',
       vetName: '',
       observations: ''
     })
@@ -145,16 +153,31 @@ export default defineComponent({
 
     const detailDialog = ref(false)
 
-    const onSubmit = () => {
+    const isLoading = ref(false)
+
+    const qFormRef = ref(null) as Ref<QForm | null>
+
+    const onSubmit = async () => {
+      if (!details.value.length) { return }
       const data = buildRequestObject()
-      eventoMedicoService.create(data)
+      try {
+        isLoading.value = true
+        const id = await eventoMedicoService.create(data)
+        showNotify(`Evento médico creado correctamente. ID: ${id}`)
+        resetForm()
+        qFormRef.value?.reset()
+      } catch (e) {
+        console.error(e)
+      } finally {
+        isLoading.value = false
+      }
     }
 
     function buildRequestObject () {
       const createUpdateReq = {
         idMascota: form.idMascota,
-        headerDate: form.headerDate,
-        headerTime: form.headerTime,
+        // headerDate: form.headerDate,
+        // headerTime: form.headerTime,
         vetName: form.vetName,
         observations: form.observations,
         rows: [] as MedicalEvent.rowDetail[]
@@ -172,6 +195,13 @@ export default defineComponent({
         console.log(createUpdateReq.rows)
       }
       return createUpdateReq
+    }
+
+    function resetForm () {
+      form.idMascota = ''
+      form.vetName = ''
+      form.observations = ''
+      details.value = []
     }
 
     const fRules = {
@@ -210,11 +240,13 @@ export default defineComponent({
     })
 
     return {
+      qFormRef,
       form,
       fRules,
       detailDialog,
       details,
       total,
+      isLoading,
       onDetailDialogCancelled,
       onDetailDialogAdded,
       openDetailDialogForm,
