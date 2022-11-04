@@ -10,7 +10,8 @@
         </q-toolbar-title>
         <q-tabs v-model="tab">
           <q-route-tab name="inicio" label="Inicio" :to="{ name: 'indexPage' }" exact/>
-          <q-route-tab name="eventosMedicos" label="Eventos Médicos" :to="{ name: 'medicalEventsPage' }" exact/>
+          <q-route-tab name="eventosMedicos" label="E. Médicos" :to="{ name: 'medicalEventsPage' }" exact/>
+          <q-route-tab name="listarEventosMedicos" label="Listar E. Médicos" :to="{ name: 'medicalEventsListPage' }" exact/>
         </q-tabs>
       </q-toolbar>
 
