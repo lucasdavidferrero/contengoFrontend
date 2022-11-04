@@ -6,4 +6,9 @@ export class EventoMedicoService {
     console.log(res)
     return res.data.id
   }
+
+  async getAllHeaders (): Promise<MedicalEvent.header[]> {
+    const res = await api.get('/v1/medicalEvents/getHeaders')
+    return res.data
+  }
 }

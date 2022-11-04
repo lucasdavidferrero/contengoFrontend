@@ -12,19 +12,19 @@
         </tr>
         <tr>
           <th class="text-left">Ver Detalle</th>
-          <th class="text-right">ID Mascota</th>
-          <th class="text-right">Veterinario</th>
-          <th class="text-right">Observaciones</th>
-          <th class="text-right">Acciones</th>
+          <th class="text-left">ID Mascota</th>
+          <th class="text-left">Veterinario</th>
+          <th class="text-left">Observaciones</th>
+          <th class="text-left">Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td class="text-left"></td>
-          <td class="text-right">5654</td>
-          <td class="text-right">Lucas Ferrero</td>
-          <td class="text-right">bien ahi</td>
-          <td class="text-right">Botones</td>
+        <tr v-for="h in headers" :key="h.id">
+          <td class="text-left">[Boton]</td>
+          <td class="text-left">{{ h.idMascota }}</td>
+          <td class="text-left">{{ h.vetName }}</td>
+          <td class="text-left">{{ h.observations }}</td>
+          <td class="text-left">[Botones]</td>
         </tr>
       </tbody>
     </q-markup-table>
@@ -33,8 +33,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted, ref, Ref } from 'vue'
+import { EventoMedicoService } from 'src/services/EventoMedicoService'
+import { MedicalEvent } from 'src/models/MedicalEvent'
+
+const eventoMedicoService = new EventoMedicoService()
 export default defineComponent({
-  name: 'MedicalEventsListPage'
+  name: 'MedicalEventsListPage',
+  setup () {
+    const headers = ref([]) as Ref<MedicalEvent.header[]>
+    onMounted(async () => {
+      const data = await eventoMedicoService.getAllHeaders()
+      headers.value = data
+    })
+
+    return { headers }
+  }
 })
 </script>
