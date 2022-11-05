@@ -13,14 +13,12 @@ export namespace MedicalEvent {
     rows: rowDetail[]
   }
 
-  export interface headerCommon {
+  // chill
+  export interface header {
+    idHeader: number
     idMascota: string
     vetName: string
     observations: string
-  }
-
-  export interface header extends headerCommon {
-    id: number
   }
 
   export interface detail {
@@ -29,8 +27,11 @@ export namespace MedicalEvent {
     unitPrice: number
   }
 
-  export interface updateReq extends headerCommon {
-    idHeader: number
+  export interface updateReq extends header {
     rows: detail[]
+  }
+
+  export interface tableHeaderDetail extends header {
+    rows: detail[] | null
   }
 }

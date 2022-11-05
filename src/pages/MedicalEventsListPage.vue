@@ -19,7 +19,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="h in headers" :key="h.id">
+        <tr v-for="h in headers" :key="h.idHeader">
           <td class="text-left">[Boton]</td>
           <td class="text-left">{{ h.idMascota }}</td>
           <td class="text-left">{{ h.vetName }}</td>
@@ -41,9 +41,10 @@ const eventoMedicoService = new EventoMedicoService()
 export default defineComponent({
   name: 'MedicalEventsListPage',
   setup () {
-    const headers = ref([]) as Ref<MedicalEvent.header[]>
+    const headers = ref([]) as Ref<MedicalEvent.tableHeaderDetail[]>
     onMounted(async () => {
       const data = await eventoMedicoService.getAllHeaders()
+      console.log(data)
       headers.value = data
     })
 
