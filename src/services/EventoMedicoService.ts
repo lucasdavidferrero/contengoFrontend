@@ -10,8 +10,14 @@ export class EventoMedicoService {
   async getAllHeaders (): Promise<MedicalEvent.tableHeaderDetail[]> {
     const res = await api.get('/v1/medicalEvents/getHeaders')
     return res.data.map((x) => {
-      x.row = null
+      x.rows = null
       return x
     })
+  }
+
+  async getDetailByHeaderId (idHeader: number): Promise<MedicalEvent.detail[] | null> {
+    const res = await api.get(`/v1/medicalEvents/getDetail/${idHeader}`)
+    if (res.data.length) return res.data
+    return null
   }
 }
