@@ -38,12 +38,57 @@
           label-style="font-size: 1.1em"
         />
       </div>
+
+      <div>
+        <q-dialog
+        v-model="expandDetailDialog" @hide="onDetailDialogHide">
+          <q-card style="width: 700px; max-width: 80vw;">
+            <q-card-section>
+              <div class="text-h6">Detalle</div>
+            </q-card-section>
+
+            <q-card-section class="q-pt-none">
+              <q-markup-table flat>
+                <thead>
+                  <tr>
+                    <th class="text-left">Descripción</th>
+                    <th class="text-left">Cantidad</th>
+                    <th class="text-left">Precio unitario</th>
+                    <th class="text-left">Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="h in selectedDetail" :key="h.description">
+                    <td class="text-left">{{ h.description }}</td>
+                    <td class="text-left">{{ h.quantity }}</td>
+                    <td class="text-left">{{ h.unitPrice }}</td>
+                    <td class="text-left">{{ h.unitPrice * h.quantity }}</td>
+                  </tr>
+                </tbody>
+                <tfoot class="q-pa-md" colspan="5">
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-right text-weight-bold text-accent text-h5">Total ${{ totalSelectedDetail }}</td>
+                  </tr>
+                </tfoot>
+              </q-markup-table>
+            </q-card-section>
+
+            <q-card-actions align="right" class="bg-white text-teal">
+              <q-btn flat label="OK" v-close-popup />
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
+      </div>
     </div>
   </q-page>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, Ref } from 'vue'
+import { defineComponent, onMounted, ref, computed, Ref } from 'vue'
 import { EventoMedicoService } from 'src/services/EventoMedicoService'
 import { MedicalEvent } from 'src/models/MedicalEvent'
 
@@ -53,20 +98,39 @@ export default defineComponent({
   setup () {
     const headers = ref([]) as Ref<MedicalEvent.tableHeaderDetail[]>
     const isTableLoading = ref(false)
+    const selectedDetail = ref([]) as Ref<MedicalEvent.detail[]>
+    const expandDetailDialog = ref(false)
 
     async function onShowDetail (idHeader: number) {
       try {
         isTableLoading.value = true
         const rowDetail = await eventoMedicoService.getDetailByHeaderId(idHeader)
-        debugger
         const iHeader = headers.value.findIndex(x => x.idHeader === idHeader)
         headers.value[iHeader].rows = rowDetail
+        selectedDetail.value = rowDetail || []
+        expandDetailDialog.value = true
       } catch (e) {
         console.error(e)
       } finally {
         isTableLoading.value = false
       }
     }
+
+    function onDetailDialogHide () {
+      expandDetailDialog.value = false
+      selectedDetail.value = []
+    }
+
+    const totalSelectedDetail = computed(() => {
+      let acc = 0
+      if (selectedDetail.value.length > 0) {
+        selectedDetail.value.forEach((x) => {
+          acc += x.unitPrice * x.quantity
+        })
+        return acc
+      }
+      return 0
+    })
 
     onMounted(async () => {
       try {
@@ -80,7 +144,7 @@ export default defineComponent({
       }
     })
 
-    return { headers, isTableLoading, onShowDetail }
+    return { headers, isTableLoading, selectedDetail, expandDetailDialog, totalSelectedDetail, onDetailDialogHide, onShowDetail }
   }
 })
 </script>
