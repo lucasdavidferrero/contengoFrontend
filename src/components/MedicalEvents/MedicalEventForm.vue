@@ -128,7 +128,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, Ref, computed } from 'vue'
+/* tslint:disable */
+import { defineComponent, reactive, ref, Ref, computed, PropType, onMounted } from 'vue'
 import { required, positiveNumber, requiredNum } from 'src/utils/Rules'
 import DetailDialogForm from './DetailDialogForm.vue'
 import { MedicalEvent } from 'src/models/MedicalEvent'
@@ -141,7 +142,13 @@ export default defineComponent({
   name: 'MedicalEventForm',
   components: { DetailDialogForm },
   emits: ['cancelled'],
-  setup (_, { emit }) {
+  props: {
+    selectedMedicalEvent: {
+      type: Object as PropType<MedicalEvent.tableHeaderDetail | null>,
+      default: null
+    }
+  },
+  setup (props, { emit }) {
     const form = reactive({
       idMascota: '',
       // headerDate: '',
@@ -242,6 +249,21 @@ export default defineComponent({
         accTotal += e.finalPrice
       })
       return accTotal
+    })
+
+    /* Editar evento... */
+    onMounted(() => {
+      if (props.selectedMedicalEvent) {
+        form.idMascota = props.selectedMedicalEvent.idMascota
+        form.observations = props.selectedMedicalEvent.observations
+        form.vetName = props.selectedMedicalEvent.vetName
+        if (props.selectedMedicalEvent.rows) {
+          details.value = props.selectedMedicalEvent.rows.map((e) => {
+            e.finalPrice = e.quantity * e.unitPrice
+            return e
+          })
+        }
+      }
     })
 
     return {

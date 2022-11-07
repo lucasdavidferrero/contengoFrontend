@@ -9,7 +9,7 @@
             </q-card-section>
 
             <q-card-section class="q-pt-none">
-              <MedicalEventForm @cancelled="handleEditCancel"/>
+              <MedicalEventForm @cancelled="handleEditCancel" :selected-medical-event="selectedMedicalEvent"/>
             </q-card-section>
           </q-card>
         </q-dialog>
@@ -169,6 +169,9 @@ export default defineComponent({
     const selectedMedicalEvent = ref(null) as Ref<MedicalEvent.tableHeaderDetail | null>
     const QDialogEdit = ref(null) as Ref<QDialog | null>
     function onEditRow (iHeader: number) {
+      // Buscar por índice.
+      //  Pasarlo como una prop.
+      selectedMedicalEvent.value = headers.value[iHeader]
       console.log(iHeader)
       QDialogEdit.value?.show()
     }
