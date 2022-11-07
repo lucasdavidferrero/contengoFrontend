@@ -109,6 +109,7 @@ import { EventoMedicoService } from 'src/services/EventoMedicoService'
 import { MedicalEvent } from 'src/models/MedicalEvent'
 import MedicalEventForm from 'src/components/MedicalEvents/MedicalEventForm.vue'
 import { QDialog } from 'quasar'
+import { showNotify } from 'src/plugins/globalNotify'
 
 const eventoMedicoService = new EventoMedicoService()
 export default defineComponent({
@@ -169,9 +170,6 @@ export default defineComponent({
     const selectedMedicalEvent = ref(null) as Ref<MedicalEvent.tableHeaderDetail | null>
     const QDialogEdit = ref(null) as Ref<QDialog | null>
     async function onEditRow (iHeader: number) {
-      //  Buscar por índice.
-      //  Buscar detalle en Backend
-      //  Pasarlo como una prop.
       try {
         isTableLoading.value = true
         const rowDetail = await eventoMedicoService.getDetailByHeaderId(headers.value[iHeader].idHeader)
@@ -193,9 +191,17 @@ export default defineComponent({
       resetEdit()
     }
 
-    function onDeleteRow (iHeader: number) {
-      console.log(iHeader)
-      resetEdit()
+    async function onDeleteRow (iHeader: number) {
+      try {
+        isTableLoading.value = true
+        const msg = await eventoMedicoService.deleteByIdHeader(headers.value[iHeader].idHeader)
+        headers.value.splice(iHeader, 1)
+        showNotify(msg)
+      } catch (e) {
+        console.error(e)
+      } finally {
+        isTableLoading.value = false
+      }
     }
 
     function handleEditCancel () {

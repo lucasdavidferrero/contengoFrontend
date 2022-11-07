@@ -27,4 +27,9 @@ export class EventoMedicoService {
     if (res.data.length) return res.data
     return null
   }
+
+  async deleteByIdHeader (idHeader: number) {
+    const res = await api.post('/v1/medicalEvents/delete', { idHeader })
+    return res.data.message
+  }
 }
