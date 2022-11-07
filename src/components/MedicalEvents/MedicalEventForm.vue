@@ -109,7 +109,7 @@
       </div>
 
       <div class="row justify-center">
-        <q-btn label="Cancelar" type="button" color="primary" flat class="q-mr-sm"/>
+        <q-btn label="Cancelar" type="button" color="primary" flat class="q-mr-sm" @click="onCancel"/>
         <q-btn label="Guardar" type="submit" color="primary"/>
       </div>
 
@@ -140,7 +140,8 @@ const eventoMedicoService = new EventoMedicoService()
 export default defineComponent({
   name: 'MedicalEventForm',
   components: { DetailDialogForm },
-  setup () {
+  emits: ['cancelled'],
+  setup (_, { emit }) {
     const form = reactive({
       idMascota: '',
       // headerDate: '',
@@ -171,6 +172,10 @@ export default defineComponent({
       } finally {
         isLoading.value = false
       }
+    }
+
+    function onCancel () {
+      emit('cancelled')
     }
 
     function buildRequestObject () {
@@ -251,7 +256,8 @@ export default defineComponent({
       onDetailDialogAdded,
       openDetailDialogForm,
       onSubmit,
-      onDeleteRow
+      onDeleteRow,
+      onCancel
     }
   }
 })

@@ -1,6 +1,19 @@
 <template>
   <q-page class="q-pa-xl">
     <div>
+      <div>
+        <q-dialog persistent full-width ref="QDialogEdit">
+          <q-card>
+            <q-card-section>
+              Editar Evento Médico
+            </q-card-section>
+
+            <q-card-section class="q-pt-none">
+              <MedicalEventForm @cancelled="handleEditCancel"/>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+      </div>
       <div class="relative-position">
         <q-markup-table flat bordered>
           <thead>
@@ -20,14 +33,17 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(h) in headers" :key="h.idHeader">
+            <tr v-for="(h, index) in headers" :key="h.idHeader">
               <td class="text-left">
                 <q-btn flat round dense icon="add" @click="onShowDetail(h.idHeader)"></q-btn>
               </td>
               <td class="text-left">{{ h.idMascota }}</td>
               <td class="text-left">{{ h.vetName }}</td>
               <td class="text-left">{{ h.observations }}</td>
-              <td class="text-left">[Botones]</td>
+              <td class="text-left">
+                <q-btn flat round dense icon="edit" @click="onEditRow(index)"></q-btn>
+                <q-btn flat round dense icon="delete" @click="onDeleteRow(index)"></q-btn>
+              </td>
             </tr>
           </tbody>
         </q-markup-table>
@@ -91,10 +107,13 @@
 import { defineComponent, onMounted, ref, computed, Ref } from 'vue'
 import { EventoMedicoService } from 'src/services/EventoMedicoService'
 import { MedicalEvent } from 'src/models/MedicalEvent'
+import MedicalEventForm from 'src/components/MedicalEvents/MedicalEventForm.vue'
+import { QDialog } from 'quasar'
 
 const eventoMedicoService = new EventoMedicoService()
 export default defineComponent({
   name: 'MedicalEventsListPage',
+  components: { MedicalEventForm },
   setup () {
     const headers = ref([]) as Ref<MedicalEvent.tableHeaderDetail[]>
     const isTableLoading = ref(false)
@@ -144,7 +163,44 @@ export default defineComponent({
       }
     })
 
-    return { headers, isTableLoading, selectedDetail, expandDetailDialog, totalSelectedDetail, onDetailDialogHide, onShowDetail }
+    /*
+      Editar Evento Médico
+    */
+    const selectedMedicalEvent = ref(null) as Ref<MedicalEvent.tableHeaderDetail | null>
+    const QDialogEdit = ref(null) as Ref<QDialog | null>
+    function onEditRow (iHeader: number) {
+      console.log(iHeader)
+      QDialogEdit.value?.show()
+    }
+
+    function onDeleteRow (iHeader: number) {
+      console.log(iHeader)
+      resetEdit()
+    }
+
+    function handleEditCancel () {
+      resetEdit()
+    }
+
+    function resetEdit () {
+      selectedMedicalEvent.value = null
+      QDialogEdit.value?.hide()
+    }
+
+    return {
+      headers,
+      isTableLoading,
+      selectedDetail,
+      expandDetailDialog,
+      totalSelectedDetail,
+      selectedMedicalEvent,
+      QDialogEdit,
+      onDetailDialogHide,
+      onShowDetail,
+      onEditRow,
+      onDeleteRow,
+      handleEditCancel
+    }
   }
 })
 </script>
