@@ -168,12 +168,21 @@ export default defineComponent({
     */
     const selectedMedicalEvent = ref(null) as Ref<MedicalEvent.tableHeaderDetail | null>
     const QDialogEdit = ref(null) as Ref<QDialog | null>
-    function onEditRow (iHeader: number) {
-      // Buscar por índice.
+    async function onEditRow (iHeader: number) {
+      //  Buscar por índice.
+      //  Buscar detalle en Backend
       //  Pasarlo como una prop.
-      selectedMedicalEvent.value = headers.value[iHeader]
-      console.log(iHeader)
-      QDialogEdit.value?.show()
+      try {
+        isTableLoading.value = true
+        const rowDetail = await eventoMedicoService.getDetailByHeaderId(headers.value[iHeader].idHeader)
+        headers.value[iHeader].rows = rowDetail || []
+        selectedMedicalEvent.value = headers.value[iHeader]
+        QDialogEdit.value?.show()
+      } catch (e) {
+        console.error(e)
+      } finally {
+        isTableLoading.value = false
+      }
     }
 
     function onDeleteRow (iHeader: number) {

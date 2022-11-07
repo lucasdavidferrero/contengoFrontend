@@ -257,10 +257,13 @@ export default defineComponent({
         form.idMascota = props.selectedMedicalEvent.idMascota
         form.observations = props.selectedMedicalEvent.observations
         form.vetName = props.selectedMedicalEvent.vetName
-        if (props.selectedMedicalEvent.rows) {
-          details.value = props.selectedMedicalEvent.rows.map((e) => {
-            e.finalPrice = e.quantity * e.unitPrice
-            return e
+        console.log(props.selectedMedicalEvent)
+        if (props.selectedMedicalEvent.rows && props.selectedMedicalEvent.rows.length) {
+          props.selectedMedicalEvent.rows.forEach(element => {
+            details.value.push({
+              ...element,
+              finalPrice: element.quantity * element.unitPrice
+            })
           })
         }
       }
