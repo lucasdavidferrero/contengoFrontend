@@ -9,7 +9,7 @@
             </q-card-section>
 
             <q-card-section class="q-pt-none">
-              <MedicalEventForm @cancelled="handleEditCancel" :selected-medical-event="selectedMedicalEvent"/>
+              <MedicalEventForm @cancelled="handleEditCancel" @successfully="onSuccessfullyEdit" :selected-medical-event="selectedMedicalEvent"/>
             </q-card-section>
           </q-card>
         </q-dialog>
@@ -185,6 +185,14 @@ export default defineComponent({
       }
     }
 
+    function onSuccessfullyEdit (newData: MedicalEvent.buildObjectType) {
+      const iHeader = headers.value.findIndex(e => { return e.idHeader === newData.idHeader })
+      headers.value[iHeader].idMascota = newData.idMascota
+      headers.value[iHeader].vetName = newData.vetName
+      headers.value[iHeader].observations = newData.observations
+      resetEdit()
+    }
+
     function onDeleteRow (iHeader: number) {
       console.log(iHeader)
       resetEdit()
@@ -211,7 +219,8 @@ export default defineComponent({
       onShowDetail,
       onEditRow,
       onDeleteRow,
-      handleEditCancel
+      handleEditCancel,
+      onSuccessfullyEdit
     }
   }
 })

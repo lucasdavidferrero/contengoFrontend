@@ -7,6 +7,13 @@ export class EventoMedicoService {
     return res.data.id
   }
 
+  async update (updateMedicalEventData: MedicalEvent.buildObjectType): Promise<string> {
+    console.log(updateMedicalEventData)
+    const res = await api.post('/v1/medicalEvents/update', updateMedicalEventData)
+    console.log(res)
+    return res.data.message
+  }
+
   async getAllHeaders (): Promise<MedicalEvent.tableHeaderDetail[]> {
     const res = await api.get('/v1/medicalEvents/getHeaders')
     return res.data.map((x) => {

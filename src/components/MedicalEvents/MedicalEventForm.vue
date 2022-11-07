@@ -141,7 +141,7 @@ const eventoMedicoService = new EventoMedicoService()
 export default defineComponent({
   name: 'MedicalEventForm',
   components: { DetailDialogForm },
-  emits: ['cancelled'],
+  emits: ['cancelled', 'successfully'],
   props: {
     selectedMedicalEvent: {
       type: Object as PropType<MedicalEvent.tableHeaderDetail | null>,
@@ -166,18 +166,34 @@ export default defineComponent({
     const qFormRef = ref(null) as Ref<QForm | null>
 
     const onSubmit = async () => {
-      if (!details.value.length) { return }
-      const data = buildRequestObject()
-      try {
-        isLoading.value = true
-        const id = await eventoMedicoService.create(data)
-        showNotify(`Evento médico creado correctamente. ID: ${id}`)
-        resetForm()
-        qFormRef.value?.reset()
-      } catch (e) {
-        console.error(e)
-      } finally {
-        isLoading.value = false
+      if (!props.selectedMedicalEvent) {
+        if (!details.value.length) { return }
+        try {
+          const data = buildRequestObject()
+          isLoading.value = true
+          const id = await eventoMedicoService.create(data)
+          showNotify(`Evento médico creado correctamente. ID: ${id}`)
+          resetForm()
+          qFormRef.value?.reset()
+        } catch (e) {
+          console.error(e)
+        } finally {
+          isLoading.value = false
+        }
+      } else {
+        try {
+          const data = buildRequestObject(true)
+          isLoading.value = true
+          await eventoMedicoService.update(data)
+          showNotify('Evento modificado correctamente')
+          resetForm()
+          qFormRef.value?.reset()
+          emit('successfully', data)
+        } catch (e) {
+          console.error(e)
+        } finally {
+          isLoading.value = false
+        }
       }
     }
 
@@ -185,11 +201,9 @@ export default defineComponent({
       emit('cancelled')
     }
 
-    function buildRequestObject () {
-      const createUpdateReq = {
+    function buildRequestObject (isUpdate?: boolean) {
+      const createUpdateReq: MedicalEvent.buildObjectType = {
         idMascota: form.idMascota,
-        // headerDate: form.headerDate,
-        // headerTime: form.headerTime,
         vetName: form.vetName,
         observations: form.observations,
         rows: [] as MedicalEvent.rowDetail[]
@@ -205,6 +219,10 @@ export default defineComponent({
           })
         })
         console.log(createUpdateReq.rows)
+      }
+
+      if (isUpdate) {
+        createUpdateReq.idHeader = props.selectedMedicalEvent?.idHeader
       }
       return createUpdateReq
     }

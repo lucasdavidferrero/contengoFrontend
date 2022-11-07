@@ -34,4 +34,12 @@ export namespace MedicalEvent {
   export interface tableHeaderDetail extends header {
     rows: detail[] | null
   }
+
+  export interface buildObjectType {
+    idHeader?: number
+    idMascota: string
+    vetName: string
+    observations: string
+    rows: rowDetail[]
+  }
 }
